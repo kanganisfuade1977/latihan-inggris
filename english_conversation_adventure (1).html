@@ -1,0 +1,2979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>English Conversation Adventure - Speak English, Have Fun!</title>
+  <style>
+    /* ==========================================================================
+       1. VARIABLES & GLOBAL RESET (OFFLINE SYSTEM FONTS + 3D CARTOON PALETTE)
+       ========================================================================== */
+    :root {
+      --bg-sky-top: #38bdf8;
+      --bg-sky-bottom: #bae6fd;
+      --grass-light: #4ade80;
+      --grass-dark: #16a34a;
+      --primary: #3b82f6;
+      --primary-dark: #1d4ed8;
+      --secondary: #f59e0b;
+      --secondary-dark: #b45309;
+      --success: #22c55e;
+      --success-dark: #15803d;
+      --danger: #ef4444;
+      --danger-dark: #b91c1c;
+      --purple: #a855f7;
+      --purple-dark: #7e22ce;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+      --font-cartoon: 'Comic Sans MS', 'Chalkboard SE', 'Trebuchet MS', 'Segoe UI', system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: var(--font-cartoon);
+      background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* ==========================================================================
+       2. 16:9 ADVENTURE GAME STAGE CONTAINER
+       ========================================================================== */
+    #game-viewport {
+      width: 100vw;
+      height: 100vh;
+      max-width: 177.78vh;
+      max-height: 56.25vw;
+      background: linear-gradient(180deg, var(--bg-sky-top) 0%, var(--bg-sky-bottom) 68%, var(--grass-light) 68%, var(--grass-dark) 100%);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65), inset 0 0 0 6px rgba(255, 255, 255, 0.35);
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @media (max-width: 768px) {
+      #game-viewport {
+        max-width: 100vw;
+        max-height: 100vh;
+        border-radius: 0;
+        box-shadow: none;
+      }
+    }
+
+    /* Decorative Floating Clouds & Hills */
+    .cloud {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 999px;
+      box-shadow: 0 8px 15px rgba(255, 255, 255, 0.4), inset 0 -6px 10px rgba(186, 230, 253, 0.8);
+      pointer-events: none;
+      z-index: 0;
+      animation: floatCloud linear infinite;
+    }
+    .cloud::before, .cloud::after {
+      content: '';
+      position: absolute;
+      background: inherit;
+      border-radius: 50%;
+    }
+    .cloud.c1 { width: 140px; height: 48px; top: 8%; left: -160px; animation-duration: 38s; }
+    .cloud.c1::before { width: 64px; height: 64px; top: -30px; left: 20px; }
+    .cloud.c1::after { width: 50px; height: 50px; top: -20px; right: 22px; }
+
+    .cloud.c2 { width: 110px; height: 38px; top: 18%; left: -140px; animation-duration: 48s; animation-delay: 12s; }
+    .cloud.c2::before { width: 50px; height: 50px; top: -24px; left: 16px; }
+    .cloud.c2::after { width: 40px; height: 40px; top: -16px; right: 16px; }
+
+    @keyframes floatCloud {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(130vw); }
+    }
+
+    /* ==========================================================================
+       3. 3D CARTOON BUTTONS & BADGES
+       ========================================================================== */
+    .btn-3d {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: var(--font-cartoon);
+      font-weight: 800;
+      font-size: clamp(0.95rem, 1.4vw, 1.15rem);
+      padding: 12px 22px;
+      border: none;
+      border-radius: 18px;
+      cursor: pointer;
+      color: #fff;
+      background: linear-gradient(180deg, #60a5fa 0%, var(--primary) 100%);
+      box-shadow: 0 6px 0 var(--primary-dark), 0 10px 18px rgba(0, 0, 0, 0.22), inset 0 3px 4px rgba(255, 255, 255, 0.5);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.15s ease;
+      text-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
+    }
+    .btn-3d:hover {
+      filter: brightness(1.06);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 0 var(--primary-dark), 0 14px 22px rgba(0, 0, 0, 0.25), inset 0 3px 4px rgba(255, 255, 255, 0.6);
+    }
+    .btn-3d:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 var(--primary-dark), 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-green {
+      background: linear-gradient(180deg, #4ade80 0%, var(--success) 100%);
+      box-shadow: 0 6px 0 var(--success-dark), 0 10px 18px rgba(0, 0, 0, 0.22), inset 0 3px 4px rgba(255, 255, 255, 0.5);
+    }
+    .btn-green:hover {
+      box-shadow: 0 8px 0 var(--success-dark), 0 14px 22px rgba(0, 0, 0, 0.25), inset 0 3px 4px rgba(255, 255, 255, 0.6);
+    }
+    .btn-green:active {
+      box-shadow: 0 2px 0 var(--success-dark), 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-amber {
+      background: linear-gradient(180deg, #fbbf24 0%, var(--secondary) 100%);
+      box-shadow: 0 6px 0 var(--secondary-dark), 0 10px 18px rgba(0, 0, 0, 0.22), inset 0 3px 4px rgba(255, 255, 255, 0.5);
+    }
+    .btn-amber:hover {
+      box-shadow: 0 8px 0 var(--secondary-dark), 0 14px 22px rgba(0, 0, 0, 0.25), inset 0 3px 4px rgba(255, 255, 255, 0.6);
+    }
+    .btn-amber:active {
+      box-shadow: 0 2px 0 var(--secondary-dark), 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-purple {
+      background: linear-gradient(180deg, #c084fc 0%, var(--purple) 100%);
+      box-shadow: 0 6px 0 var(--purple-dark), 0 10px 18px rgba(0, 0, 0, 0.22), inset 0 3px 4px rgba(255, 255, 255, 0.5);
+    }
+    .btn-purple:hover {
+      box-shadow: 0 8px 0 var(--purple-dark), 0 14px 22px rgba(0, 0, 0, 0.25), inset 0 3px 4px rgba(255, 255, 255, 0.6);
+    }
+    .btn-purple:active {
+      box-shadow: 0 2px 0 var(--purple-dark), 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-red {
+      background: linear-gradient(180deg, #f87171 0%, var(--danger) 100%);
+      box-shadow: 0 6px 0 var(--danger-dark), 0 10px 18px rgba(0, 0, 0, 0.22), inset 0 3px 4px rgba(255, 255, 255, 0.5);
+    }
+    .btn-red:active {
+      box-shadow: 0 2px 0 var(--danger-dark);
+    }
+
+    .btn-sm {
+      padding: 8px 14px;
+      font-size: clamp(0.8rem, 1.1vw, 0.95rem);
+      border-radius: 14px;
+      box-shadow: 0 4px 0 rgba(0, 0, 0, 0.28), inset 0 2px 3px rgba(255, 255, 255, 0.5);
+    }
+
+    /* ==========================================================================
+       4. TOP NAVIGATION & HUD BAR
+       ========================================================================== */
+    #top-hud {
+      position: relative;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 18px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 4px solid #cbd5e1;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .hud-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .hud-pill {
+      background: #f1f5f9;
+      border: 3px solid #cbd5e1;
+      border-radius: 999px;
+      padding: 5px 14px;
+      font-weight: 800;
+      font-size: clamp(0.85rem, 1.2vw, 1.05rem);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+    }
+
+    .hud-pill.score-pill {
+      background: #fef3c7;
+      border-color: #f59e0b;
+      color: #92400e;
+    }
+    .hud-pill.lives-pill {
+      background: #fee2e2;
+      border-color: #f87171;
+      color: #991b1b;
+    }
+    .hud-pill.level-pill {
+      background: #dbeafe;
+      border-color: #3b82f6;
+      color: #1e40af;
+    }
+    .hud-pill.combo-pill {
+      background: linear-gradient(135deg, #ffedd5, #fed7aa);
+      border-color: #f97316;
+      color: #c2410c;
+      animation: pulseBounce 0.6s infinite alternate;
+    }
+
+    @keyframes pulseBounce {
+      from { transform: scale(1); }
+      to { transform: scale(1.08); }
+    }
+
+    /* ==========================================================================
+       5. SCREEN MANAGEMENT & TRANSITIONS
+       ========================================================================== */
+    .screen {
+      position: relative;
+      z-index: 10;
+      flex: 1;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 24px;
+      overflow-y: auto;
+      animation: fadeSlideIn 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .screen.active {
+      display: flex;
+    }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(14px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ==========================================================================
+       6. START / INTRO SCREEN
+       ========================================================================== */
+    .intro-card {
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 32px;
+      padding: 24px 32px;
+      max-width: 860px;
+      width: 96%;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25), inset 0 0 0 6px #fde047;
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 24px;
+      align-items: center;
+    }
+
+    @media (max-width: 760px) {
+      .intro-card {
+        grid-template-columns: 1fr;
+        padding: 18px;
+        gap: 14px;
+      }
+    }
+
+    .game-title {
+      font-size: clamp(1.5rem, 2.7vw, 2.35rem);
+      font-weight: 900;
+      color: #1d4ed8;
+      text-shadow: 0 3px 0 #93c5fd;
+      line-height: 1.15;
+      text-align: center;
+    }
+
+    .game-subtitle {
+      font-size: clamp(1rem, 1.5vw, 1.25rem);
+      font-weight: 800;
+      color: #d97706;
+      background: #fef3c7;
+      padding: 6px 16px;
+      border-radius: 999px;
+      display: inline-block;
+      margin-top: 8px;
+      border: 2px solid #fcd34d;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 14px;
+      text-align: left;
+    }
+
+    .form-group label {
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: #334155;
+      letter-spacing: 0.5px;
+    }
+
+    .cartoon-input {
+      width: 100%;
+      padding: 12px 16px;
+      font-family: var(--font-cartoon);
+      font-size: 1.1rem;
+      font-weight: 700;
+      border: 4px solid #93c5fd;
+      border-radius: 16px;
+      background: #f8fafc;
+      color: #0f172a;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .cartoon-input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.25);
+      background: #ffffff;
+    }
+
+    .warning-banner {
+      background: #fef2f2;
+      border: 3px solid #f87171;
+      color: #b91c1c;
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      margin-bottom: 12px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      animation: shake 0.35s ease;
+    }
+    .warning-banner.show {
+      display: flex;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+
+    /* ==========================================================================
+       7. ADVENTURE MAP SCREEN
+       ========================================================================== */
+    .map-header {
+      background: rgba(255, 255, 255, 0.94);
+      padding: 10px 24px;
+      border-radius: 999px;
+      border: 4px solid #fbbf24;
+      margin-bottom: 16px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .map-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      width: 100%;
+      max-width: 1020px;
+    }
+
+    @media (max-width: 760px) {
+      .map-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+    }
+
+    .level-node {
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 16px;
+      border: 5px solid #3b82f6;
+      box-shadow: 0 8px 0 #1d4ed8, 0 14px 24px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .level-node:hover:not(.locked) {
+      transform: translateY(-5px) scale(1.02);
+    }
+    .level-node.completed {
+      border-color: #22c55e;
+      box-shadow: 0 8px 0 #15803d, 0 14px 24px rgba(0, 0, 0, 0.2);
+      background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);
+    }
+    .level-node.locked {
+      border-color: #94a3b8;
+      box-shadow: 0 8px 0 #475569, 0 10px 18px rgba(0, 0, 0, 0.15);
+      background: #e2e8f0;
+      cursor: not-allowed;
+      opacity: 0.85;
+    }
+
+    .level-badge {
+      background: #2563eb;
+      color: #fff;
+      font-weight: 900;
+      font-size: 0.82rem;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 6px;
+    }
+    .level-node.completed .level-badge { background: #16a34a; }
+    .level-node.locked .level-badge { background: #64748b; }
+
+    .level-icon {
+      font-size: 2.6rem;
+      margin: 4px 0;
+      filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.15));
+    }
+    .level-title {
+      font-weight: 900;
+      font-size: 1.08rem;
+      color: #0f172a;
+    }
+    .level-topic {
+      font-size: 0.85rem;
+      color: #475569;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+    .lock-overlay {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      font-size: 1.35rem;
+    }
+
+    /* ==========================================================================
+       8. GAMEPLAY ARENA (LEVEL STAGE)
+       ========================================================================== */
+    .stage-container {
+      width: 100%;
+      max-width: 1040px;
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 28px;
+      padding: 18px 24px;
+      border: 5px solid #60a5fa;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .stage-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 3px dashed #cbd5e1;
+      padding-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .progress-track {
+      flex: 1;
+      min-width: 160px;
+      height: 18px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 2px solid #94a3b8;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #34d399, #10b981);
+      border-radius: 999px;
+      transition: width 0.35s ease;
+    }
+
+    .timer-badge {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 3px solid #ef4444;
+      padding: 4px 14px;
+      border-radius: 999px;
+      font-weight: 900;
+      font-size: 1rem;
+      display: none;
+    }
+    .timer-badge.active { display: inline-flex; align-items: center; gap: 6px; }
+
+    /* Character & Dialogue Scene */
+    .dialogue-stage {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 18px;
+      align-items: center;
+      background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
+      padding: 14px 18px;
+      border-radius: 22px;
+      border: 3px solid #bfdbfe;
+    }
+
+    @media (max-width: 680px) {
+      .dialogue-stage {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+    }
+
+    .character-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .character-avatar {
+      width: 120px;
+      height: 120px;
+      animation: idleBob 2.2s ease-in-out infinite;
+    }
+    .character-avatar.speaking {
+      animation: speakBounce 0.35s ease-in-out infinite alternate;
+    }
+    .character-avatar.happy {
+      animation: jumpCelebrate 0.5s ease;
+    }
+
+    @keyframes idleBob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    @keyframes speakBounce {
+      from { transform: scale(1) rotate(-2deg); }
+      to { transform: scale(1.07) rotate(2deg); }
+    }
+    @keyframes jumpCelebrate {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-18px) scale(1.12); }
+    }
+
+    .speech-bubble {
+      background: #ffffff;
+      border: 4px solid #3b82f6;
+      border-radius: 22px;
+      padding: 14px 18px;
+      position: relative;
+      box-shadow: 0 6px 14px rgba(59, 130, 246, 0.15);
+    }
+
+    .speech-en {
+      font-size: clamp(1.1rem, 1.7vw, 1.4rem);
+      font-weight: 900;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+    .speech-id {
+      font-size: 0.92rem;
+      color: #64748b;
+      font-weight: 700;
+      font-style: italic;
+    }
+
+    /* Options Grid */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .option-card {
+      background: #ffffff;
+      border: 4px solid #cbd5e1;
+      border-radius: 18px;
+      padding: 14px 16px;
+      font-family: var(--font-cartoon);
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #1e293b;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 5px 0 #94a3b8;
+      transition: all 0.15s ease;
+      text-align: left;
+    }
+    .option-card:hover {
+      border-color: #3b82f6;
+      background: #eff6ff;
+      transform: translateY(-2px);
+      box-shadow: 0 7px 0 #2563eb;
+    }
+    .option-card.correct {
+      border-color: #16a34a;
+      background: #dcfce7;
+      color: #14532d;
+      box-shadow: 0 5px 0 #15803d;
+    }
+    .option-card.wrong {
+      border-color: #dc2626;
+      background: #fee2e2;
+      color: #7f1d1d;
+      box-shadow: 0 5px 0 #b91c1c;
+    }
+
+    .option-letter {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #3b82f6;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+
+    /* Drag & Drop Conversation Builder */
+    .builder-zone {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 680px) {
+      .builder-zone { grid-template-columns: 1fr; }
+    }
+    .card-pool, .drop-slots {
+      background: #f8fafc;
+      border: 3px dashed #94a3b8;
+      border-radius: 18px;
+      padding: 12px;
+      min-height: 170px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .drop-slots {
+      background: #eff6ff;
+      border-color: #3b82f6;
+    }
+    .drag-card {
+      background: #ffffff;
+      border: 3px solid #f59e0b;
+      border-radius: 14px;
+      padding: 10px 14px;
+      font-weight: 800;
+      cursor: grab;
+      box-shadow: 0 4px 0 #d97706;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: transform 0.15s;
+    }
+    .drag-card:active { cursor: grabbing; transform: scale(0.98); }
+
+    /* Matching Mini-Game */
+    .matching-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .match-col {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .match-item {
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 4px solid #cbd5e1;
+      background: #fff;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #94a3b8;
+      transition: all 0.15s;
+    }
+    .match-item.selected {
+      border-color: #f59e0b;
+      background: #fef3c7;
+      box-shadow: 0 4px 0 #d97706;
+      transform: scale(1.02);
+    }
+    .match-item.matched {
+      border-color: #22c55e;
+      background: #dcfce7;
+      color: #166534;
+      box-shadow: 0 4px 0 #15803d;
+      pointer-events: none;
+    }
+
+    /* Canteen Food Grid & Library Objects Grid */
+    .visual-items-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+    }
+    .visual-item-btn {
+      background: #fff;
+      border: 4px solid #fbbf24;
+      border-radius: 20px;
+      padding: 14px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #d97706;
+      transition: transform 0.15s;
+    }
+    .visual-item-btn:hover {
+      transform: translateY(-4px) scale(1.03);
+      background: #fffbeb;
+    }
+    .visual-item-emoji {
+      font-size: 2.8rem;
+    }
+    .visual-item-label {
+      font-weight: 900;
+      font-size: 1rem;
+      color: #1e293b;
+    }
+
+    /* Feedback Banner */
+    .feedback-bar {
+      padding: 12px 18px;
+      border-radius: 16px;
+      font-weight: 800;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .feedback-bar.show { display: flex; }
+    .feedback-bar.success {
+      background: #dcfce7;
+      border: 3px solid #22c55e;
+      color: #14532d;
+    }
+    .feedback-bar.error {
+      background: #fee2e2;
+      border: 3px solid #ef4444;
+      color: #7f1d1d;
+    }
+
+    /* ==========================================================================
+       9. MODALS (LEARN MATERIAL, SPEAKING CHALLENGE, HELP, PAUSE, ACHIEVEMENT)
+       ========================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.72);
+      backdrop-filter: blur(4px);
+      z-index: 50;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-backdrop.active { display: flex; }
+
+    .modal-box {
+      background: #ffffff;
+      border-radius: 28px;
+      padding: 24px 28px;
+      max-width: 620px;
+      width: 100%;
+      border: 6px solid #3b82f6;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+      text-align: center;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: popIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.85); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .vocab-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      margin: 14px 0;
+      text-align: left;
+    }
+    .vocab-row {
+      background: #f1f5f9;
+      border: 2px solid #cbd5e1;
+      border-radius: 14px;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    /* Achievement Toast Popup */
+    #achievement-toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      border: 4px solid #f59e0b;
+      border-radius: 22px;
+      padding: 14px 20px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+      z-index: 60;
+      display: none;
+      align-items: center;
+      gap: 12px;
+      animation: slideUpToast 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    #achievement-toast.show { display: flex; }
+
+    @keyframes slideUpToast {
+      from { transform: translateY(100px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* ==========================================================================
+       10. FINAL VICTORY & CERTIFICATE SCREEN
+       ========================================================================== */
+    .victory-card {
+      background: #ffffff;
+      border-radius: 30px;
+      padding: 24px 32px;
+      max-width: 780px;
+      width: 96%;
+      border: 6px solid #fbbf24;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+      gap: 10px;
+      margin: 14px 0;
+    }
+    .stat-box {
+      background: #f8fafc;
+      border: 3px solid #cbd5e1;
+      border-radius: 16px;
+      padding: 10px;
+    }
+    .stat-label { font-size: 0.8rem; color: #64748b; font-weight: 800; }
+    .stat-val { font-size: 1.15rem; color: #0f172a; font-weight: 900; margin-top: 2px; }
+
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 45;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="confetti-canvas"></canvas>
+
+  <div id="game-viewport">
+    <!-- Decorative Animated Clouds -->
+    <div class="cloud c1"></div>
+    <div class="cloud c2"></div>
+
+    <!-- ========================================================================
+         TOP NAVIGATION HUD
+         ======================================================================== -->
+    <header id="top-hud">
+      <div class="hud-group">
+        <button class="btn-3d btn-sm" onclick="GameApp.goHome()" title="Home">🏠 HOME</button>
+        <button class="btn-3d btn-amber btn-sm" id="btn-nav-map" onclick="GameApp.goMap()" style="display:none;">🗺️ MAP</button>
+        <button class="btn-3d btn-sm" id="btn-nav-back" onclick="GameApp.goBack()" style="display:none;">↩️ BACK</button>
+      </div>
+
+      <div class="hud-group" id="hud-stats" style="display:none;">
+        <div class="hud-pill level-pill" id="hud-level">LEVEL 1/6</div>
+        <div class="hud-pill score-pill">⭐ SCORE: <span id="hud-score">0</span></div>
+        <div class="hud-pill lives-pill" id="hud-lives">❤️❤️❤️</div>
+        <div class="hud-pill combo-pill" id="hud-combo" style="display:none;">🔥 COMBO x2</div>
+      </div>
+
+      <div class="hud-group">
+        <button class="btn-3d btn-purple btn-sm" id="btn-speaking-mode" onclick="GameApp.openSpeakingModal()" style="display:none;">🎤 SPEAK</button>
+        <button class="btn-3d btn-green btn-sm" id="btn-sound-toggle" onclick="AudioEngine.toggleSound()">🔊 SOUND ON</button>
+        <button class="btn-3d btn-amber btn-sm" onclick="GameApp.openHelpModal()">❓ HELP</button>
+        <button class="btn-3d btn-sm" id="btn-pause" onclick="GameApp.openPauseModal()" style="display:none;">⏸️ PAUSE</button>
+      </div>
+    </header>
+
+    <!-- ========================================================================
+         SCREEN 1: HALAMAN PEMBUKA (START ADVENTURE)
+         ======================================================================== -->
+    <section id="screen-intro" class="screen active">
+      <div class="intro-card">
+        <!-- Left: Expressive 3D-Cartoon Kids Illustration -->
+        <div style="text-align:center;">
+          <svg viewBox="0 0 360 250" width="100%" style="max-width:340px; filter: drop-shadow(0 10px 14px rgba(0,0,0,0.15));">
+            <defs>
+              <radialGradient id="skin1" cx="40%" cy="35%" r="65%">
+                <stop offset="0%" stop-color="#fde68a"/>
+                <stop offset="100%" stop-color="#f59e0b"/>
+              </radialGradient>
+              <radialGradient id="skin2" cx="40%" cy="35%" r="65%">
+                <stop offset="0%" stop-color="#fed7aa"/>
+                <stop offset="100%" stop-color="#ea580c"/>
+              </radialGradient>
+              <linearGradient id="shirtBlue" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#60a5fa"/>
+                <stop offset="100%" stop-color="#1d4ed8"/>
+              </linearGradient>
+              <linearGradient id="shirtPink" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#f472b6"/>
+                <stop offset="100%" stop-color="#be185d"/>
+              </linearGradient>
+            </defs>
+            <!-- Speech Bubbles -->
+            <rect x="14" y="12" width="128" height="44" rx="18" fill="#ffffff" stroke="#3b82f6" stroke-width="4"/>
+            <text x="78" y="39" font-size="16" font-weight="900" text-anchor="middle" fill="#1d4ed8">Hello! Hi! 👋</text>
+            <rect x="206" y="16" width="142" height="44" rx="18" fill="#ffffff" stroke="#22c55e" stroke-width="4"/>
+            <text x="277" y="43" font-size="15" font-weight="900" text-anchor="middle" fill="#15803d">How are you? 😊</text>
+
+            <!-- Boy Character (Left) -->
+            <g transform="translate(45, 70)">
+              <rect x="28" y="92" width="64" height="72" rx="24" fill="url(#shirtBlue)"/>
+              <circle cx="60" cy="54" r="42" fill="url(#skin1)"/>
+              <!-- Hair -->
+              <path d="M18,48 C18,12 102,12 102,48 C92,28 28,28 18,48 Z" fill="#1e293b"/>
+              <!-- Eyes -->
+              <circle cx="45" cy="52" r="6" fill="#0f172a"/><circle cx="47" cy="50" r="2" fill="#fff"/>
+              <circle cx="75" cy="52" r="6" fill="#0f172a"/><circle cx="77" cy="50" r="2" fill="#fff"/>
+              <!-- Happy Smile -->
+              <path d="M46,68 Q60,82 74,68" stroke="#991b1b" stroke-width="4" fill="none" stroke-linecap="round"/>
+            </g>
+
+            <!-- Girl Character (Right) -->
+            <g transform="translate(195, 70)">
+              <!-- Hijab / Hair -->
+              <circle cx="60" cy="56" r="48" fill="#a855f7"/>
+              <rect x="26" y="92" width="68" height="72" rx="24" fill="url(#shirtPink)"/>
+              <circle cx="60" cy="54" r="38" fill="url(#skin2)"/>
+              <!-- Eyes -->
+              <circle cx="46" cy="52" r="6" fill="#0f172a"/><circle cx="48" cy="50" r="2" fill="#fff"/>
+              <circle cx="74" cy="52" r="6" fill="#0f172a"/><circle cx="76" cy="50" r="2" fill="#fff"/>
+              <!-- Happy Smile -->
+              <path d="M47,68 Q60,80 73,68" stroke="#991b1b" stroke-width="4" fill="none" stroke-linecap="round"/>
+            </g>
+          </svg>
+          <div>
+            <h1 class="game-title">🌟 ENGLISH CONVERSATION ADVENTURE 🌟</h1>
+            <div class="game-subtitle">“Speak English, Have Fun!”</div>
+          </div>
+        </div>
+
+        <!-- Right: Student Login Form -->
+        <div>
+          <div style="background:#eff6ff; padding:12px 16px; border-radius:16px; border:2px solid #93c5fd; margin-bottom:14px; font-size:0.92rem; font-weight:700; color:#1e3a8a;">
+            🎒 Halo Petualang Kelas 4! Masukkan nama dan kelasmu untuk memulai petualangan Bahasa Inggris!
+          </div>
+
+          <div id="intro-warning" class="warning-banner">
+            ⚠️ “Please enter your name and class first!”
+          </div>
+
+          <div class="form-group">
+            <label for="input-name">ENTER YOUR NAME (Nama Lengkap)</label>
+            <input type="text" id="input-name" class="cartoon-input" placeholder="Example: Rina / Andi" maxlength="28" />
+          </div>
+
+          <div class="form-group">
+            <label for="input-class">CLASS (Kelas)</label>
+            <input type="text" id="input-class" class="cartoon-input" placeholder="Example: 4A / Grade 4" maxlength="16" />
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:10px; margin-top:14px;">
+            <button class="btn-3d btn-green" style="width:100%; font-size:1.2rem; padding:15px;" onclick="GameApp.startAdventure()">
+              ▶ START ADVENTURE
+            </button>
+            <button class="btn-3d btn-amber btn-sm" id="btn-continue-saved" style="display:none; width:100%;" onclick="GameApp.continueSavedGame()">
+              💾 CONTINUE SAVED PROGRESS
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SCREEN 2: ADVENTURE MAP
+         ======================================================================== -->
+    <section id="screen-map" class="screen">
+      <div class="map-header">
+        <h2 style="font-size:clamp(1.15rem, 2vw, 1.55rem); color:#1e3a8a;">
+          🗺️ ADVENTURE MAP — Welcome, <span id="map-player-name" style="color:#d97706;">Explorer</span>!
+        </h2>
+        <p style="font-size:0.88rem; color:#475569; font-weight:700;">
+          Pilih lokasi sekolah untuk berlatih percakapan Bahasa Inggris! Selesaikan level untuk membuka tahap berikutnya.
+        </p>
+      </div>
+
+      <div class="map-grid" id="map-nodes-container">
+        <!-- Rendered dynamically by JS -->
+      </div>
+
+      <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center;">
+        <button class="btn-3d btn-purple btn-sm" onclick="GameApp.openAchievementsModal()">
+          🏅 MY BADGES (<span id="badge-count">0</span>/5)
+        </button>
+        <button class="btn-3d btn-green btn-sm" id="btn-map-certificate" style="display:none;" onclick="GameApp.showVictoryScreen()">
+          🎓 VIEW FINAL SCORE & CERTIFICATE
+        </button>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SCREEN 3: LEVEL GAMEPLAY STAGE
+         ======================================================================== -->
+    <section id="screen-stage" class="screen">
+      <div class="stage-container">
+        <!-- Stage Top Info -->
+        <div class="stage-header">
+          <div>
+            <span id="stage-level-badge" style="background:#2563eb; color:#fff; padding:4px 12px; border-radius:999px; font-weight:900; font-size:0.85rem;">LEVEL 1</span>
+            <strong id="stage-level-title" style="font-size:1.1rem; margin-left:8px; color:#0f172a;">SCHOOL GATE</strong>
+          </div>
+
+          <div class="progress-track">
+            <div class="progress-fill" id="stage-progress-fill"></div>
+          </div>
+
+          <div id="stage-timer" class="timer-badge">⏱️ <span id="timer-seconds">20</span>s</div>
+
+          <button class="btn-3d btn-amber btn-sm" onclick="GameApp.openStudyModal()">
+            📖 STUDY PHRASES
+          </button>
+        </div>
+
+        <!-- Character & Dialogue Bubble -->
+        <div class="dialogue-stage">
+          <div class="character-box">
+            <div id="stage-character-svg" class="character-avatar"></div>
+            <div id="stage-character-name" style="font-weight:900; font-size:0.92rem; color:#1e40af; margin-top:4px;">Teacher</div>
+          </div>
+
+          <div class="speech-bubble">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px;">
+              <span id="stage-mode-tag" style="background:#dbeafe; color:#1d4ed8; font-size:0.78rem; font-weight:900; padding:3px 10px; border-radius:999px;">
+                🟢 CHOOSE THE BEST RESPONSE
+              </span>
+              <button class="btn-3d btn-sm" style="padding:5px 12px; font-size:0.82rem;" onclick="GameApp.speakCurrentPrompt()">
+                🔊 LISTEN
+              </button>
+            </div>
+            <div class="speech-en" id="stage-prompt-en">“Good morning! How are you?”</div>
+            <div class="speech-id" id="stage-prompt-id">Terjemahan: “Selamat pagi! Apa kabarmu?”</div>
+          </div>
+        </div>
+
+        <!-- Dynamic Interactive Activity Area -->
+        <div id="stage-interactive-area"></div>
+
+        <!-- Immediate Feedback Box -->
+        <div id="stage-feedback" class="feedback-bar">
+          <div>
+            <div id="feedback-title" style="font-size:1.08rem;">🎉 Excellent!</div>
+            <div id="feedback-explain" style="font-size:0.9rem; font-weight:700;">“How are you?” → “I'm fine, thank you.”</div>
+          </div>
+          <button class="btn-3d btn-green btn-sm" id="btn-next-question" onclick="GameApp.nextChallenge()">
+            NEXT ▶
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SCREEN 4: FINAL SCORE & CERTIFICATE
+         ======================================================================== -->
+    <section id="screen-victory" class="screen">
+      <div class="victory-card">
+        <div style="font-size:2rem;">🎉🎉🎉</div>
+        <h2 style="font-size:clamp(1.3rem, 2.3vw, 1.9rem); color:#1d4ed8; font-weight:900;">
+          CONGRATULATIONS! YOU ARE AN ENGLISH CONVERSATION HERO!
+        </h2>
+        <p id="final-personal-msg" style="font-weight:800; color:#15803d; margin-top:6px; font-size:1rem;">
+          “Congratulations! You have completed the English Conversation Adventure! Keep practicing English every day! See you next time!”
+        </p>
+
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-label">STUDENT NAME</div>
+            <div class="stat-val" id="vic-name">-</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">CLASS</div>
+            <div class="stat-val" id="vic-class">-</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">FINAL SCORE</div>
+            <div class="stat-val" style="color:#d97706;" id="vic-score">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">CORRECT ANSWERS</div>
+            <div class="stat-val" style="color:#16a34a;" id="vic-correct">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">COMPLETED LEVELS</div>
+            <div class="stat-val" id="vic-levels">6/6</div>
+          </div>
+          <div class="stat-box" style="background:#fef3c7; border-color:#f59e0b;">
+            <div class="stat-label">PREDIKAT</div>
+            <div class="stat-val" style="color:#b45309;" id="vic-rank">🏆 CONVERSATION MASTER</div>
+          </div>
+        </div>
+
+        <!-- Certificate Preview Canvas -->
+        <div style="margin:10px auto; max-width:520px;">
+          <canvas id="certificate-canvas" width="900" height="620" style="width:100%; height:auto; border-radius:16px; border:4px solid #f59e0b; box-shadow:0 10px 24px rgba(0,0,0,0.18);"></canvas>
+        </div>
+
+        <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:12px;">
+          <button class="btn-3d btn-green" onclick="GameApp.downloadCertificate()">
+            ⬇️ DOWNLOAD CERTIFICATE
+          </button>
+          <button class="btn-3d btn-amber" onclick="GameApp.goMap()">
+            🗺️ BACK TO MAP
+          </button>
+          <button class="btn-3d btn-purple" onclick="GameApp.resetAllProgress()">
+            🔄 PLAY AGAIN FROM START
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ==========================================================================
+       MODALS (STUDY MATERIAL, SPEAKING CHALLENGE, HELP, PAUSE, BADGES)
+       ========================================================================== -->
+  <!-- Study Phrases Modal -->
+  <div id="modal-study" class="modal-backdrop">
+    <div class="modal-box">
+      <h3 style="font-size:1.4rem; color:#1d4ed8;">📚 LEARN & LISTEN (Materi Percakapan)</h3>
+      <p style="font-size:0.9rem; color:#475569; font-weight:700;">Klik tombol 🔊 untuk mendengarkan cara pengucapan Bahasa Inggris yang benar!</p>
+      <div class="vocab-list" id="study-vocab-list"></div>
+      <button class="btn-3d btn-green" onclick="GameApp.closeModal('modal-study')">✅ I'M READY TO PLAY!</button>
+    </div>
+  </div>
+
+  <!-- Speaking Challenge Modal -->
+  <div id="modal-speaking" class="modal-backdrop">
+    <div class="modal-box" style="border-color:#a855f7;">
+      <h3 style="font-size:1.45rem; color:#7e22ce;">🎤 SPEAKING CHALLENGE</h3>
+      <p style="font-size:0.92rem; color:#475569; font-weight:700; margin-top:4px;">
+        Ayo berlatih berbicara Bahasa Inggris dengan lantang dan percaya diri!
+      </p>
+
+      <div style="background:#f3e8ff; border:3px solid #c084fc; border-radius:20px; padding:16px; margin:14px 0;">
+        <div id="speak-target-en" style="font-size:1.45rem; font-weight:900; color:#581c87;">
+          “Good morning! How are you?”
+        </div>
+        <div id="speak-target-id" style="font-size:0.9rem; color:#6b21a8; font-weight:700; margin-top:4px;">
+          (Selamat pagi! Apa kabarmu?)
+        </div>
+        <button class="btn-3d btn-sm" style="margin-top:10px;" onclick="GameApp.listenSpeakingExample()">
+          🔊 HEAR EXAMPLE
+        </button>
+      </div>
+
+      <div id="speak-status" style="font-weight:800; color:#334155; margin-bottom:12px; min-height:24px;">
+        Tekan tombol di bawah lalu ucapkan kalimat di atas!
+      </div>
+
+      <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+        <button class="btn-3d btn-purple" id="btn-speak-now" onclick="GameApp.startSpeakingRecognition()">
+          🎤 SPEAK NOW
+        </button>
+        <button class="btn-3d btn-amber" onclick="GameApp.nextSpeakingSentence()">
+          🔄 TRY ANOTHER SENTENCE
+        </button>
+        <button class="btn-3d btn-sm" onclick="GameApp.closeModal('modal-speaking')">
+          ✖ CLOSE
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Help Modal -->
+  <div id="modal-help" class="modal-backdrop">
+    <div class="modal-box">
+      <h3 style="font-size:1.4rem; color:#1d4ed8;">❓ HOW TO PLAY (Cara Bermain)</h3>
+      <div style="text-align:left; font-size:0.95rem; font-weight:700; color:#334155; display:flex; flex-direction:column; gap:8px; margin:14px 0;">
+        <div>1️⃣ <b>Pilih Level di Peta:</b> Mulai dari Level 1 (School Gate) hingga Level 6 (English Festival).</div>
+        <div>2️⃣ <b>Baca & Dengarkan:</b> Klik tombol <b>🔊 LISTEN</b> untuk mendengar pengucapan Bahasa Inggris.</div>
+        <div>3️⃣ <b>Selesaikan Tantangan:</b> Jawab pertanyaan, susun kartu dialog, cocokkan kalimat, atau pesan makanan di kantin!</div>
+        <div>4️⃣ <b>Skor & Nyawa:</b> Jawaban benar mendapat <b>+10 poin</b> & bonus Combo 🔥. Salah mengurangi 1 ❤️.</div>
+        <div>5️⃣ <b>Sertifikat:</b> Selesaikan semua level untuk mendapatkan sertifikat namamu!</div>
+      </div>
+      <button class="btn-3d btn-green" onclick="GameApp.closeModal('modal-help')">👍 GOT IT!</button>
+    </div>
+  </div>
+
+  <!-- Pause Modal -->
+  <div id="modal-pause" class="modal-backdrop">
+    <div class="modal-box">
+      <h3 style="font-size:1.5rem; color:#1d4ed8;">⏸️ GAME PAUSED</h3>
+      <p style="font-weight:700; color:#475569; margin:10px 0 18px;">Istirahat sebentar! Siap melanjutkan petualangan Bahasa Inggrismu?</p>
+      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+        <button class="btn-3d btn-green" onclick="GameApp.resumeFromPause()">▶ RESUME GAME</button>
+        <button class="btn-3d btn-amber" onclick="GameApp.closeModal('modal-pause'); GameApp.goMap();">🗺️ ADVENTURE MAP</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Badges Modal -->
+  <div id="modal-badges" class="modal-backdrop">
+    <div class="modal-box" style="border-color:#f59e0b;">
+      <h3 style="font-size:1.4rem; color:#b45309;">🏅 YOUR ACHIEVEMENTS</h3>
+      <div id="badges-grid" style="display:grid; grid-template-columns:1fr; gap:8px; margin:14px 0; text-align:left;"></div>
+      <button class="btn-3d btn-amber" onclick="GameApp.closeModal('modal-badges')">CLOSE</button>
+    </div>
+  </div>
+
+  <!-- Achievement Toast Notification -->
+  <div id="achievement-toast">
+    <div style="font-size:2.2rem;">🏅</div>
+    <div>
+      <div style="font-size:0.78rem; font-weight:900; color:#b45309;">ACHIEVEMENT UNLOCKED!</div>
+      <div id="toast-badge-name" style="font-size:1.05rem; font-weight:900; color:#78350f;">First Conversation</div>
+    </div>
+  </div>
+
+  <script>
+    /* ==========================================================================
+       1. WEB AUDIO API SOUND EFFECTS & BACKGROUND MELODY ENGINE
+       ========================================================================== */
+    const AudioEngine = (() => {
+      let ctx = null;
+      let soundEnabled = true;
+      let bgmInterval = null;
+      let noteStep = 0;
+
+      function initContext() {
+        if (!ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) ctx = new AudioCtx();
+        }
+        if (ctx && ctx.state === 'suspended') {
+          ctx.resume();
+        }
+      }
+
+      function playTone(freq, type, duration, vol = 0.14, delay = 0) {
+        if (!soundEnabled) return;
+        initContext();
+        if (!ctx) return;
+
+        const now = ctx.currentTime + delay;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, now);
+
+        gain.gain.setValueAtTime(0.001, now);
+        gain.gain.exponentialRampToValueAtTime(vol, now + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + duration + 0.03);
+      }
+
+      function playClick() {
+        playTone(580, 'sine', 0.09, 0.12);
+      }
+
+      function playCorrect() {
+        playTone(523.25, 'triangle', 0.14, 0.16, 0);
+        playTone(659.25, 'triangle', 0.14, 0.16, 0.09);
+        playTone(783.99, 'triangle', 0.25, 0.18, 0.18);
+      }
+
+      function playWrong() {
+        playTone(260, 'sawtooth', 0.18, 0.11, 0);
+        playTone(195, 'sawtooth', 0.28, 0.11, 0.14);
+      }
+
+      function playLevelComplete() {
+        const notes = [523.25, 659.25, 783.99, 1046.5];
+        notes.forEach((n, idx) => playTone(n, 'triangle', 0.22, 0.18, idx * 0.11));
+      }
+
+      function playVictory() {
+        const melody = [523.25, 659.25, 783.99, 1046.5, 783.99, 1046.5];
+        melody.forEach((n, idx) => playTone(n, 'triangle', 0.26, 0.2, idx * 0.13));
+      }
+
+      function startBGM() {
+        if (bgmInterval) return;
+        const scale = [261.63, 329.63, 392.00, 329.63, 293.66, 349.23, 440.00, 392.00];
+        bgmInterval = setInterval(() => {
+          if (!soundEnabled || document.hidden) return;
+          const freq = scale[noteStep % scale.length];
+          playTone(freq, 'sine', 0.35, 0.03);
+          noteStep++;
+        }, 650);
+      }
+
+      function toggleSound() {
+        soundEnabled = !soundEnabled;
+        const btn = document.getElementById('btn-sound-toggle');
+        if (btn) {
+          btn.textContent = soundEnabled ? '🔊 SOUND ON' : '🔇 SOUND OFF';
+        }
+        if (soundEnabled) {
+          initContext();
+          playClick();
+          startBGM();
+        } else if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+        }
+      }
+
+      function speakText(text, onStart, onEnd) {
+        if (!soundEnabled) {
+          if (onEnd) onEnd();
+          return;
+        }
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+          const clean = text.replace(/[“”"()_]/g, '').trim();
+          const utter = new SpeechSynthesisUtterance(clean);
+          utter.lang = 'en-US';
+          utter.rate = 0.88; // Clear, child-friendly pace
+          utter.pitch = 1.1;
+          utter.onstart = () => { if (onStart) onStart(); };
+          utter.onend = () => { if (onEnd) onEnd(); };
+          utter.onerror = () => { if (onEnd) onEnd(); };
+          window.speechSynthesis.speak(utter);
+        } else if (onEnd) {
+          onEnd();
+        }
+      }
+
+      return {
+        initContext,
+        playClick,
+        playCorrect,
+        playWrong,
+        playLevelComplete,
+        playVictory,
+        startBGM,
+        toggleSound,
+        speakText,
+        isSoundOn: () => soundEnabled
+      };
+    })();
+
+    /* ==========================================================================
+       2. CHARACTER SVG AVATARS GENERATOR
+       ========================================================================== */
+    const CharacterArt = {
+      getSVG(role) {
+        const palettes = {
+          teacher: { skin: '#fde68a', shirt: '#2563eb', hair: '#1e293b', accessory: 'glasses' },
+          budi: { skin: '#fed7aa', shirt: '#16a34a', hair: '#0f172a', accessory: 'cap' },
+          siti: { skin: '#fde68a', shirt: '#db2777', hair: '#9333ea', accessory: 'hijab' },
+          seller: { skin: '#fed7aa', shirt: '#ea580c', hair: '#475569', accessory: 'chef' },
+          librarian: { skin: '#fde68a', shirt: '#7c3aed', hair: '#78350f', accessory: 'glasses' },
+          friend: { skin: '#fed7aa', shirt: '#0284c7', hair: '#b45309', accessory: 'none' }
+        };
+        const p = palettes[role] || palettes.teacher;
+        return `
+          <svg viewBox="0 0 120 120" width="100%" height="100%">
+            <circle cx="60" cy="60" r="56" fill="#dbeafe" stroke="#60a5fa" stroke-width="4"/>
+            ${p.accessory === 'hijab' ? `<circle cx="60" cy="54" r="36" fill="${p.hair}"/>` : ''}
+            <rect x="30" y="84" width="60" height="32" rx="16" fill="${p.shirt}"/>
+            <circle cx="60" cy="52" r="28" fill="${p.skin}"/>
+            ${p.accessory !== 'hijab' ? `<path d="M32,46 C32,20 88,20 88,46 C78,32 42,32 32,46 Z" fill="${p.hair}"/>` : ''}
+            ${p.accessory === 'chef' ? `<rect x="38" y="14" width="44" height="18" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>` : ''}
+            <circle cx="49" cy="50" r="4.5" fill="#0f172a"/><circle cx="50.5" cy="48.5" r="1.5" fill="#fff"/>
+            <circle cx="71" cy="50" r="4.5" fill="#0f172a"/><circle cx="72.5" cy="48.5" r="1.5" fill="#fff"/>
+            ${p.accessory === 'glasses' ? `
+              <circle cx="49" cy="50" r="9" fill="none" stroke="#1e293b" stroke-width="2.5"/>
+              <circle cx="71" cy="50" r="9" fill="none" stroke="#1e293b" stroke-width="2.5"/>
+              <line x1="58" y1="50" x2="62" y2="50" stroke="#1e293b" stroke-width="2.5"/>
+            ` : ''}
+            <path d="M50,64 Q60,74 70,64" stroke="#b91c1c" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          </svg>
+        `;
+      }
+    };
+
+    /* ==========================================================================
+       3. CURRICULUM DATA FOR ALL 6 LEVELS (GRADE 4 / FASE B)
+       ========================================================================== */
+    const LEVELS_DATA = [
+      {
+        id: 1,
+        icon: '🏫',
+        name: 'SCHOOL GATE',
+        topic: 'Greeting & Introduction',
+        vocab: [
+          { en: 'Hello! / Hi!', id: 'Halo! / Hai!' },
+          { en: 'Good morning!', id: 'Selamat pagi!' },
+          { en: 'How are you?', id: 'Apa kabarmu?' },
+          { en: "I'm fine, thank you.", id: 'Saya baik-baik saja, terima kasih.' },
+          { en: "What's your name?", id: 'Siapa namamu?' },
+          { en: 'My name is Rina.', id: 'Nama saya Rina.' },
+          { en: 'Nice to meet you.', id: 'Senang bertemu denganmu.' },
+          { en: 'Nice to meet you too.', id: 'Senang bertemu denganmu juga.' }
+        ],
+        challenges: [
+          {
+            type: 'mcq',
+            modeLabel: '🟢 CHOOSE THE BEST RESPONSE',
+            character: 'teacher',
+            charName: 'Mrs. Ani (Teacher)',
+            promptEn: '“Good morning! How are you?”',
+            promptId: '“Selamat pagi! Apa kabarmu?”',
+            options: ['My name is Rina.', "I'm fine, thank you.", 'Goodbye.'],
+            answer: 1,
+            explain: '“How are you?” (Apa kabarmu?) dijawab dengan “I\'m fine, thank you.”'
+          },
+          {
+            type: 'mcq',
+            modeLabel: '🟢 CHOOSE THE BEST RESPONSE',
+            character: 'friend',
+            charName: 'Rina (New Friend)',
+            promptEn: '“Hello! What’s your name?”',
+            promptId: '“Halo! Siapa namamu?”',
+            options: ['My name is Budi.', 'I am 10 years old.', 'Good night.'],
+            answer: 0,
+            explain: 'Untuk menjawab “What’s your name?”, gunakan “My name is ...”'
+          },
+          {
+            type: 'mcq',
+            modeLabel: '🟠 COMPLETE THE CONVERSATION',
+            character: 'siti',
+            charName: 'Siti',
+            promptEn: 'Siti: “Nice to meet you!” → You: “________”',
+            promptId: 'Siti: “Senang bertemu denganmu!” → Kamu: “________”',
+            options: ['See you tomorrow.', 'Nice to meet you too.', 'I am hungry.'],
+            answer: 1,
+            explain: 'Jika teman berkata “Nice to meet you”, balas dengan “Nice to meet you too.”'
+          },
+          {
+            type: 'matching',
+            modeLabel: '🟡 MATCHING CONVERSATION',
+            character: 'teacher',
+            charName: 'Mrs. Ani',
+            promptEn: 'Match the greeting on the left with the right answer!',
+            promptId: 'Cocokkan sapaan di kiri dengan jawaban yang tepat di kanan!',
+            pairs: [
+              { left: 'Good morning!', right: 'Good morning, Teacher!' },
+              { left: 'How are you?', right: "I'm fine, thank you." },
+              { left: "What's your name?", right: 'My name is Edo.' }
+            ],
+            explain: 'Hebat! Kamu sudah bisa mencocokkan sapaan dan perkenalan dasar!'
+          },
+          {
+            type: 'builder',
+            modeLabel: '🔵 CONVERSATION BUILDER (DRAG & DROP)',
+            character: 'siti',
+            charName: 'Rina & Budi',
+            promptEn: 'Arrange the cards in the correct conversation order!',
+            promptId: 'Susun kartu dialog di bawah ini menjadi urutan percakapan yang benar!',
+            correctOrder: [
+              'Hello!',
+              "What's your name?",
+              'My name is Rina.',
+              'Nice to meet you.',
+              'Nice to meet you too.'
+            ],
+            explain: 'Urutan percakapan: Sapaan → Tanya nama → Jawab nama → Salam kenal!'
+          }
+        ]
+      },
+      {
+        id: 2,
+        icon: '📚',
+        name: 'CLASSROOM',
+        topic: 'Classroom Conversation',
+        vocab: [
+          { en: 'May I come in?', id: 'Bolehkah saya masuk?' },
+          { en: 'Can I borrow your pencil?', id: 'Bolehkah saya meminjam pensilmu?' },
+          { en: 'Can you help me?', id: 'Bisakah kamu membantuku?' },
+          { en: 'Yes, of course.', id: 'Ya, tentu saja.' },
+          { en: 'Here you are.', id: 'Ini dia (silakan).' },
+          { en: 'Thank you. / You’re welcome.', id: 'Terima kasih. / Sama-sama.' },
+          { en: 'May I go to the toilet?', id: 'Bolehkah saya pergi ke toilet?' }
+        ],
+        challenges: [
+          {
+            type: 'mcq',
+            modeLabel: '🟢 CHOOSE THE BEST RESPONSE',
+            character: 'budi',
+            charName: 'Budi',
+            promptEn: 'Budi: “Can I borrow your pencil?” → Siti: “_____”',
+            promptId: 'Budi: “Bolehkah aku meminjam pensilmu?” → Siti: “_____”',
+            options: ['Good night.', 'Yes, here you are.', 'My name is Siti.'],
+            answer: 1,
+            explain: 'Saat memberikan barang yang dipinjam, katakan “Yes, here you are.”'
+          },
+          {
+            type: 'mcq',
+            modeLabel: '🟠 COMPLETE THE CONVERSATION',
+            character: 'teacher',
+            charName: 'Mrs. Ani',
+            promptEn: 'Student at the door: “Excuse me, ________” → Teacher: “Yes, come in.”',
+            promptId: 'Siswa di depan pintu: “Permisi, ________” → Guru: “Ya, silakan masuk.”',
+            options: ['May I come in?', 'What is your name?', 'I like apples.'],
+            answer: 0,
+            explain: 'Untuk meminta izin masuk kelas, gunakan “May I come in?”'
+          },
+          {
+            type: 'mcq',
+            modeLabel: '🟢 CHOOSE THE BEST RESPONSE',
+            character: 'siti',
+            charName: 'Siti',
+            promptEn: 'Siti: “Thank you for helping me!” → You: “________”',
+            promptId: 'Siti: “Terima kasih sudah membantuku!” → Kamu: “________”',
+            options: ["You're welcome.", 'Goodbye.', 'I am fine.'],
+            answer: 0,
+            explain: 'Balasan sopan untuk “Thank you” adalah “You\'re welcome.”'
+          },
+          {
+            type: 'mcq',
+            modeLabel: '🟠 COMPLETE THE CONVERSATION',
+            character: 'teacher',
+            charName: 'Mrs. Ani',
+            promptEn: 'Student: “Teacher, ________” → Teacher: “Yes, please go.”',
+            promptId: 'Siswa: “Bu Guru, ________” → Guru: “Ya, silakan pergi.”',
+            options: ['May I go to the toilet?', 'Here you are.', 'Nice to meet you.'],
+            answer: 0,
+            explain: 'Untuk izin ke toilet di kelas, katakan “May I go to the toilet?”'
+          },
+          {
+            type: 'builder',
+            modeLabel: '🔵 CONVERSATION BUILDER',
+            character: 'budi',
+            charName: 'Budi & Siti',
+            promptEn: 'Arrange the classroom borrowing conversation!',
+            promptId: 'Susun dialog meminjam pensil di kelas dengan urutan yang benar!',
+            correctOrder: [
+              'Can I borrow your pencil?',
+              'Yes, of course. Here you are.',
+              'Thank you!',
+              "You're welcome."
+            ],
+            explain: 'Luar biasa! Kamu sudah mahir meminta izin dan berterima kasih di kelas!'
+          }
+        ]
+      },
+      {
+        id: 3,
+        icon: '🍔',
+        name: 'CANTEEN',
+        topic: 'Food & Drinks Conversation',
+        vocab: [
+          { en: 'What would you like?', id: 'Kamu mau pesan apa?' },
+          { en: "I'd like some juice, please.", id: 'Saya mau jus, tolong.' },
+          { en: 'Can I have a sandwich, please?', id: 'Bolehkah saya pesan roti lapis?' },
+          { en: 'How much is it?', id: 'Berapa harganya?' },
+          { en: 'Here you are.', id: 'Ini pesanannya.' },
+          { en: 'Thank you. / You’re welcome.', id: 'Terima kasih. / Sama-sama.' }
+        ],
+        challenges: [
+          {
+            type: 'canteen',
+            modeLabel: '🟣 ORDER YOUR FOOD & DRINKS',
+            character: 'seller',
+            charName: 'Mrs. Sari (Canteen Seller)',
+            promptEn: 'Seller: “Hello! What would you like?” (Choose an item to order!)',
+            promptId: 'Penjual: “Halo! Kamu mau pesan apa?” (Klik makanan/minuman untuk memesan!)',
+            targetItem: null,
+            explain: 'Bagus! Gunakan “I\'d like ... please” saat memesan makanan!'
+          },
+          {
+            type: 'canteen',
+            modeLabel: '🟣 ORDER SPECIFIC FOOD',
+            character: 'seller',
+            charName: 'Mrs. Sari (Canteen Seller)',
+            promptEn: 'You are thirsty! Order 🥤 Juice from the menu!',
+            promptId: 'Kamu haus! Pilih dan pesan 🥤 Juice pada menu di bawah!',
+            targetItem: 'juice',
+            explain: 'Player: “I\'d like some juice, please.” → Seller: “Here you are.”'
+          },
+          {
+            type: 'canteen',
+            modeLabel: '🟣 ORDER SPECIFIC FOOD',
+            character: 'seller',
+            charName: 'Mrs. Sari (Canteen Seller)',
+            promptEn: 'You are hungry! Order 🥪 Sandwich from the menu!',
+            promptId: 'Kamu lapar! Pilih dan pesan 🥪 Sandwich pada menu di bawah!',
+            targetItem: 'sandwich',
+            explain: 'Player: “Can I have a sandwich, please?” → Seller: “Here you are.”'
+          },
+          {
+            type: 'mcq',
+            modeLabel: '🟢 CHOOSE THE BEST RESPONSE',
+            character: 'seller',
+            charName: 'Mrs. Sari',
+            promptEn: 'You want to know the price of an apple. What do you say?',
+            promptId: 'Kamu ingin menanyakan harga apel. Apa yang kamu katakan?',
+            options: ['How are you?', 'How much is it?', 'Where is the library?'],
+            answer: 1,
+            explain: 'Untuk menanyakan harga, gunakan kalimat “How much is it?”'
+          },
+          {
+            type: 'builder',
+            modeLabel: '🔵 CONVERSATION BUILDER',
+            character: 'seller',
+            charName: 'Canteen Order',
+            promptEn: 'Build a polite canteen buying conversation!',
+            promptId: 'Susun percakapan membeli makanan di kantin dengan urutan yang benar!',
+            correctOrder: [
+              'What would you like?',
+              "I'd like some milk, please.",
+              'Here you are.',
+              'Thank you!'
+            ],
+            explain: 'Sempurna! Percakapan di kantin sangat sopan dan tepat!'
+          }
+        ]
+      },
+      {
+        id: 4,
+        icon: '⚽',
+        name: 'PLAYGROUND',
+        topic: 'Activities & Hobbies',
+        vocab: [
+          { en: 'What are you doing?', id: 'Apa yang sedang kamu lakukan?' },
+          { en: "I'm playing football.", id: 'Saya sedang bermain sepak bola.' },
+          { en: "I'm reading. / I'm swimming.", id: 'Saya sedang membaca. / berenang.' },
+          { en: 'Do you like football?', id: 'Apakah kamu suka sepak bola?' },
+          { en: 'Yes, I do. / No, I don’t.', id: 'Ya, saya suka. / Tidak, saya tidak suka.' },
+          { en: 'What do you like? I like swimming.', id: 'Apa yang kamu suka? Saya suka berenang.' }
+        ],
+        challenges: [
+          {
+            type: 'mcq',
+            modeLabel: '🟣 WHAT ARE THEY DOING?',
+            character: 'budi',
+            charName: 'Budi ⚽',
+            promptEn: 'Look at Budi with the ball ⚽! “What is he doing?”',
+            promptId: 'Lihat Budi dengan bola ⚽! “Apa yang sedang dia lakukan?”',
+            options: ['He is sleeping.', 'He is playing football.', 'He is cooking.'],
+            answer: 1,
+            explain: 'Budi sedang bermain sepak bola → “He is playing football.”'
+          },
+          {
+            type: 'mcq',
+            modeLabel: '🟣 WHAT ARE THEY DOING?',
+            character: 'siti',
+            charName: 'Siti 📖',
+            promptEn: 'Siti is holding a storybook 📖. “What is she doing?”',
+            promptId: 'Siti sedang memegang buku cerita 📖. “Apa yang sedang dia lakukan?”',
+            options: ['She is reading.', 'She is swimming.', 'She is riding a bicycle.'],
+            answer: 0,
+            explain: 'Membaca buku dalam Bahasa Inggris adalah “reading”.'
+          },
+          {
+            type: 'mcq',
+            modeLabel: '🟣 WHAT ARE THEY DOING?',
+            character: 'friend',
+            charName: 'Edo 🚲',
+            promptEn: 'Edo is on his bike 🚲 in the park. “What is he doing?”',
+            promptId: 'Edo naik sepeda 🚲 di taman. “Apa yang sedang dia lakukan?”',
+            options: ['He is drawing.', 'He is riding a bicycle.', 'He is singing.'],
+            answer: 1,
+            explain: 'Bersepeda adalah “riding a bicycle”.'
+          },
+          {
+            type: 'mcq',
+            modeLabel: '🟢 EXPRESSING LIKES',
+            character: 'friend',
+            charName: 'Rina 🎨',
+            promptEn: 'Rina: “Do you like drawing?” → You (if you like it): “_____”',
+            promptId: 'Rina: “Apakah kamu suka menggambar?” → Kamu (jika suka): “_____”',
+            options: ['Yes, I do.', 'Yes, I am.', 'No, thank you.'],
+            answer: 0,
+            explain: 'Pertanyaan “Do you like ...?” dijawab dengan “Yes, I do.” atau “No, I don\'t.”'
+          },
+          {
+            type: 'matching',
+            modeLabel: '🟡 MATCH HOBBIES & ACTIVITIES',
+            character: 'budi',
+            charName: 'Playground Friends',
+            promptEn: 'Match the activity emoji with the right English sentence!',
+            promptId: 'Cocokkan ikon aktivitas dengan kalimat Bahasa Inggris yang tepat!',
+            pairs: [
+              { left: '🏊 Pool Activity', right: "I'm swimming." },
+              { left: '🎨 Art Activity', right: "I'm drawing." },
+              { left: '⚽ Field Activity', right: "I'm playing football." }
+            ],
+            explain: 'Keren! Kamu sudah menguasai kosakata hobi dan aktivitas!'
+          }
+        ]
+      },
+      {
+        id: 5,
+        icon: '📖',
+        name: 'LIBRARY',
+        topic: 'Asking for Help',
+        vocab: [
+          { en: 'Excuse me.', id: 'Permisi.' },
+          { en: 'Can you help me?', id: 'Bisakah kamu membantuku?' },
+          { en: 'Where is the English book?', id: 'Di mana buku Bahasa Inggrisnya?' },
+          { en: 'It is on the table.', id: 'Bukunya ada di atas meja.' },
+          { en: 'It is on the shelf.', id: 'Bukunya ada di atas rak.' },
+          { en: 'Thank you. / You’re welcome.', id: 'Terima kasih. / Sama-sama.' }
+        ],
+        challenges: [
+          {
+            type: 'library',
+            modeLabel: '🟣 FIND THE BOOK',
+            character: 'librarian',
+            charName: 'Mr. Dani (Librarian)',
+            promptEn: 'Student: “Excuse me. Where is the English book?” → Librarian: “It is on the table.”',
+            promptId: 'Petunjuk: “Bukunya ada di atas meja (Table).” Klik objek yang benar!',
+            correctObject: 'table',
+            explain: '⭐ You found the book! “On the table” artinya di atas meja.'
+          },
+          {
+            type: 'library',
+            modeLabel: '🟣 FIND THE BOOK',
+            character: 'librarian',
+            charName: 'Mr. Dani (Librarian)',
+            promptEn: 'Student: “Can you help me? Where is the dictionary?” → Librarian: “It is on the shelf.”',
+            promptId: 'Petunjuk: “Kamusnya ada di atas rak buku (Shelf).” Klik objek yang benar!',
+            correctObject: 'shelf',
+            explain: '⭐ You found the book! “On the shelf” artinya di atas rak buku.'
+          },
+          {
+            type: 'library',
+            modeLabel: '🟣 FIND THE BOOK',
+            character: 'librarian',
+            charName: 'Mr. Dani (Librarian)',
+            promptEn: 'Librarian: “Look! Your storybook is on the chair.”',
+            promptId: 'Petunjuk: “Buku ceritamu ada di atas kursi (Chair).” Klik objek yang benar!',
+            correctObject: 'chair',
+            explain: '⭐ You found the book! “On the chair” artinya di atas kursi.'
+          },
+          {
+            type: 'library',
+            modeLabel: '🟣 FIND THE BOOK',
+            character: 'librarian',
+            charName: 'Mr. Dani (Librarian)',
+            promptEn: 'Librarian: “The blue notebook is near the window.”',
+            promptId: 'Petunjuk: “Buku catatan biru ada di dekat jendela (Window).” Klik objek yang benar!',
+            correctObject: 'window',
+            explain: '⭐ You found the book! “Near the window” artinya di dekat jendela.'
+          },
+          {
+            type: 'builder',
+            modeLabel: '🔵 CONVERSATION BUILDER',
+            character: 'librarian',
+            charName: 'Library Help',
+            promptEn: 'Arrange the polite conversation asking for help in the library!',
+            promptId: 'Susun percakapan meminta bantuan di perpustakaan dengan benar!',
+            correctOrder: [
+              'Excuse me. Can you help me?',
+              'Yes, of course.',
+              'Where is the English book?',
+              'It is on the table.',
+              'Thank you!'
+            ],
+            explain: 'Hebat! Kamu sangat sopan saat meminta bantuan di perpustakaan!'
+          }
+        ]
+      },
+      {
+        id: 6,
+        icon: '🏆',
+        name: 'ENGLISH FESTIVAL',
+        topic: 'Final Conversation Challenge',
+        vocab: [
+          { en: 'Meeting a new friend & Greeting teacher', id: 'Berkenalan & menyapa guru' },
+          { en: 'Buying food politely', id: 'Membeli makanan dengan sopan' },
+          { en: 'Asking for help & Talking about hobbies', id: 'Meminta bantuan & membicarakan hobi' },
+          { en: 'Goodbye! / See you later!', id: 'Selamat tinggal! / Sampai jumpa lagi!' }
+        ],
+        challenges: [
+          {
+            type: 'mcq',
+            timed: true,
+            modeLabel: '🔴 FAST CONVERSATION CHALLENGE (1/10)',
+            character: 'friend',
+            charName: 'Festival Host',
+            promptEn: 'Situation 1 (New Friend): “Hello! What’s your name?”',
+            promptId: 'Situasi 1 (Teman Baru): “Halo! Siapa namamu?”',
+            options: ["I'm fine.", 'My name is Andi.', 'Goodbye.'],
+            answer: 1,
+            explain: '“What’s your name?” dijawab dengan “My name is ...”'
+          },
+          {
+            type: 'mcq',
+            timed: true,
+            modeLabel: '🔴 FAST CONVERSATION CHALLENGE (2/10)',
+            character: 'friend',
+            charName: 'Festival Host',
+            promptEn: 'Situation 1 (New Friend): “Nice to meet you!”',
+            promptId: 'Situasi 1 (Teman Baru): “Senang bertemu denganmu!”',
+            options: ['Nice to meet you too.', 'Good night.', "I'm eating."],
+            answer: 0,
+            explain: 'Balasan yang tepat adalah “Nice to meet you too.”'
+          },
+          {
+            type: 'mcq',
+            timed: true,
+            modeLabel: '🔴 FAST CONVERSATION CHALLENGE (3/10)',
+            character: 'teacher',
+            charName: 'Mrs. Ani',
+            promptEn: 'Situation 2 (Greeting Teacher): “Good morning, students! How are you?”',
+            promptId: 'Situasi 2 (Menyapa Guru): “Selamat pagi, anak-anak! Apa kabar?”',
+            options: ["We're fine, thank you!", 'My name is Budi.', 'Here you are.'],
+            answer: 0,
+            explain: 'Menjawab sapaan guru: “We\'re fine, thank you!”'
+          },
+          {
+            type: 'mcq',
+            timed: true,
+            modeLabel: '🔴 FAST CONVERSATION CHALLENGE (4/10)',
+            character: 'seller',
+            charName: 'Festival Food Booth',
+            promptEn: 'Situation 3 (Buying Food): “Welcome to the festival! What would you like?”',
+            promptId: 'Situasi 3 (Membeli Makanan): “Selamat datang! Kamu mau pesan apa?”',
+            options: ["I'd like a burger, please.", 'May I go to the toilet?', 'It is on the shelf.'],
+            answer: 0,
+            explain: 'Gunakan “I\'d like a burger, please.” untuk memesan makanan.'
+          },
+          {
+            type: 'mcq',
+            timed: true,
+            modeLabel: '🔴 FAST CONVERSATION CHALLENGE (5/10)',
+            character: 'seller',
+            charName: 'Festival Food Booth',
+            promptEn: 'Situation 3 (Buying Food): Seller gives your food: “Here you are!”',
+            promptId: 'Situasi 3: Penjual memberikan makananmu: “Ini dia!”',
+            options: ['Thank you very much!', 'Excuse me.', 'What are you doing?'],
+            answer: 0,
+            explain: 'Selalu ucapkan “Thank you very much!” setelah menerima sesuatu.'
+          },
+          {
+            type: 'mcq',
+            timed: true,
+            modeLabel: '🔴 FAST CONVERSATION CHALLENGE (6/10)',
+            character: 'librarian',
+            charName: 'Festival Guide',
+            promptEn: 'Situation 4 (Asking for Help): You lost your English book. How do you ask?',
+            promptId: 'Situasi 4 (Meminta Bantuan): Kamu mencari buku Bahasa Inggris. Bagaimana bertanya?',
+            options: ['Excuse me. Where is the English book?', 'I like swimming.', 'Good morning!'],
+            answer: 0,
+            explain: 'Awali dengan sopan: “Excuse me. Where is the English book?”'
+          },
+          {
+            type: 'mcq',
+            timed: true,
+            modeLabel: '🔴 FAST CONVERSATION CHALLENGE (7/10)',
+            character: 'budi',
+            charName: 'Budi',
+            promptEn: 'Situation 5 (Hobbies): “What do you like doing on Sunday?”',
+            promptId: 'Situasi 5 (Hobi): “Apa yang kamu suka lakukan di hari Minggu?”',
+            options: ['I like playing football.', 'Yes, here you are.', 'How much is it?'],
+            answer: 0,
+            explain: 'Mengungkapkan kesukaan/hobi: “I like playing football.”'
+          },
+          {
+            type: 'mcq',
+            timed: true,
+            modeLabel: '🔴 FAST CONVERSATION CHALLENGE (8/10)',
+            character: 'siti',
+            charName: 'Siti',
+            promptEn: 'Situation 5 (Hobbies): “Do you like swimming?”',
+            promptId: 'Situasi 5 (Hobi): “Apakah kamu suka berenang?”',
+            options: ['Yes, I do!', 'My name is Siti.', 'May I come in?'],
+            answer: 0,
+            explain: 'Pertanyaan “Do you like ...?” dijawab dengan “Yes, I do!” atau “No, I don\'t.”'
+          },
+          {
+            type: 'matching',
+            modeLabel: '🟡 FESTIVAL QUICK MATCH (9/10)',
+            character: 'teacher',
+            charName: 'Festival Quiz',
+            promptEn: 'Match all 3 everyday situations with their correct English responses!',
+            promptId: 'Cocokkan 3 situasi percakapan sehari-hari dengan respons yang benar!',
+            pairs: [
+              { left: 'Can I borrow your eraser?', right: 'Yes, of course. Here you are.' },
+              { left: 'What are you doing?', right: "I'm reading a book." },
+              { left: 'Goodbye! See you tomorrow!', right: 'Goodbye! See you!' }
+            ],
+            explain: 'Luar biasa! Tinggal 1 tantangan terakhir menuju gelar Juara!'
+          },
+          {
+            type: 'mcq',
+            timed: true,
+            modeLabel: '🔴 FINAL QUESTION (10/10)',
+            character: 'teacher',
+            charName: 'Mrs. Ani',
+            promptEn: 'Situation 6 (Saying Goodbye): The festival is over! Teacher says: “Goodbye, see you next time!”',
+            promptId: 'Situasi 6 (Berpamitan): Festival selesai! Guru berkata: “Selamat tinggal, sampai jumpa!”',
+            options: ['Goodbye, Teacher! See you!', 'How are you?', 'Can I have some juice?'],
+            answer: 0,
+            explain: 'Selamat! Kamu berhasil menyelesaikan seluruh tantangan English Festival!'
+          }
+        ]
+      }
+    ];
+
+    /* ==========================================================================
+       4. ACHIEVEMENTS & SPEAKING PRACTICE SENTENCES
+       ========================================================================== */
+    const ACHIEVEMENTS_LIST = [
+      { id: 'first_conv', icon: '🏅', title: 'First Conversation', desc: 'Complete Level 1 at the School Gate.' },
+      { id: 'great_speaker', icon: '🎤', title: 'Great Speaker', desc: 'Practice speaking in Speaking Challenge mode.' },
+      { id: 'fast_thinker', icon: '⚡', title: 'Fast Thinker', desc: 'Achieve a 3x Answer Combo streak!' },
+      { id: 'conv_expert', icon: '🌟', title: 'Conversation Expert', desc: 'Complete 4 Adventure Levels.' },
+      { id: 'conv_master', icon: '🏆', title: 'English Conversation Master', desc: 'Complete all 6 levels of the adventure!' }
+    ];
+
+    const SPEAKING_SENTENCES = [
+      { en: 'Good morning! How are you?', id: 'Selamat pagi! Apa kabarmu?' },
+      { en: "Hello! My name is Rina. Nice to meet you!", id: 'Halo! Nama saya Rina. Senang bertemu denganmu!' },
+      { en: 'Can I borrow your pencil, please?', id: 'Bolehkah saya meminjam pensilmu?' },
+      { en: "I'd like some orange juice, please.", id: 'Saya mau jus jeruk, tolong.' },
+      { en: 'Excuse me. Where is the English book?', id: 'Permisi. Di mana buku Bahasa Inggrisnya?' },
+      { en: 'I like playing football and reading!', id: 'Saya suka bermain sepak bola dan membaca!' }
+    ];
+
+    /* ==========================================================================
+       5. MAIN GAME APPLICATION CONTROLLER & STATE
+       ========================================================================== */
+    const GameApp = (() => {
+      const STORAGE_KEY = 'english_conv_adventure_v1';
+
+      let state = {
+        name: '',
+        studentClass: '',
+        unlockedLevel: 1,
+        completedLevels: [],
+        score: 0,
+        bestScore: 0,
+        correctCount: 0,
+        achievements: []
+      };
+
+      // Runtime Level State
+      let currentScreen = 'screen-intro';
+      let activeLevel = null;
+      let questionIndex = 0;
+      let lives = 3;
+      let combo = 0;
+      let answeredCurrent = false;
+      let timerInterval = null;
+      let timeLeft = 20;
+      let speakIdx = 0;
+
+      // Matching & Builder runtime state
+      let selectedLeftMatch = null;
+      let matchedCount = 0;
+      let builderPlaced = [];
+
+      function loadStorage() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            state = { ...state, ...parsed };
+            if (state.name && state.studentClass) {
+              document.getElementById('input-name').value = state.name;
+              document.getElementById('input-class').value = state.studentClass;
+              const btnCont = document.getElementById('btn-continue-saved');
+              btnCont.style.display = 'inline-flex';
+              btnCont.textContent = `💾 CONTINUE (${state.name} - Lv.${state.unlockedLevel})`;
+            }
+          }
+        } catch (e) {
+          console.warn('Storage load skipped', e);
+        }
+      }
+
+      function saveStorage() {
+        try {
+          if (state.score > state.bestScore) {
+            state.bestScore = state.score;
+          }
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (e) {
+          console.warn('Storage save skipped', e);
+        }
+      }
+
+      function unlockAchievement(id) {
+        if (state.achievements.includes(id)) return;
+        state.achievements.push(id);
+        saveStorage();
+
+        const badge = ACHIEVEMENTS_LIST.find(b => b.id === id);
+        if (!badge) return;
+
+        const toast = document.getElementById('achievement-toast');
+        document.getElementById('toast-badge-name').textContent = `${badge.icon} ${badge.title}`;
+        toast.classList.add('show');
+        AudioEngine.playLevelComplete();
+        setTimeout(() => toast.classList.remove('show'), 3600);
+        updateHUD();
+      }
+
+      function switchScreen(screenId) {
+        clearTimer();
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+        currentScreen = screenId;
+
+        const isIntro = screenId === 'screen-intro';
+        const isStage = screenId === 'screen-stage';
+
+        document.getElementById('hud-stats').style.display = isIntro ? 'none' : 'flex';
+        document.getElementById('btn-nav-map').style.display = isIntro ? 'none' : 'inline-flex';
+        document.getElementById('btn-nav-back').style.display = isStage ? 'inline-flex' : 'none';
+        document.getElementById('btn-speaking-mode').style.display = isIntro ? 'none' : 'inline-flex';
+        document.getElementById('btn-pause').style.display = isStage ? 'inline-flex' : 'none';
+
+        updateHUD();
+      }
+
+      function updateHUD() {
+        document.getElementById('hud-score').textContent = state.score;
+        const lvDisplay = activeLevel ? activeLevel.id : Math.min(state.unlockedLevel, 6);
+        document.getElementById('hud-level').textContent = `LEVEL ${lvDisplay}/6`;
+
+        const hearts = '❤️'.repeat(Math.max(0, lives)) + '🖤'.repeat(Math.max(0, 3 - lives));
+        document.getElementById('hud-lives').textContent = hearts;
+
+        const comboPill = document.getElementById('hud-combo');
+        if (combo >= 2 && currentScreen === 'screen-stage') {
+          comboPill.style.display = 'inline-flex';
+          comboPill.textContent = `🔥 COMBO x${combo}`;
+        } else {
+          comboPill.style.display = 'none';
+        }
+
+        document.getElementById('badge-count').textContent = state.achievements.length;
+      }
+
+      function startAdventure() {
+        AudioEngine.initContext();
+        AudioEngine.playClick();
+        AudioEngine.startBGM();
+
+        const nameVal = document.getElementById('input-name').value.trim();
+        const classVal = document.getElementById('input-class').value.trim();
+        const warn = document.getElementById('intro-warning');
+
+        if (!nameVal || !classVal) {
+          warn.classList.add('show');
+          AudioEngine.playWrong();
+          return;
+        }
+
+        warn.classList.remove('show');
+        state.name = nameVal;
+        state.studentClass = classVal;
+        saveStorage();
+        goMap();
+      }
+
+      function continueSavedGame() {
+        AudioEngine.initContext();
+        AudioEngine.playClick();
+        AudioEngine.startBGM();
+        goMap();
+      }
+
+      function goHome() {
+        AudioEngine.playClick();
+        switchScreen('screen-intro');
+      }
+
+      function goBack() {
+        AudioEngine.playClick();
+        if (currentScreen === 'screen-stage' || currentScreen === 'screen-victory') {
+          goMap();
+        } else {
+          goHome();
+        }
+      }
+
+      function goMap() {
+        AudioEngine.playClick();
+        activeLevel = null;
+        document.getElementById('map-player-name').textContent = `${state.name} (${state.studentClass})`;
+
+        const container = document.getElementById('map-nodes-container');
+        container.innerHTML = '';
+
+        LEVELS_DATA.forEach(lvl => {
+          const isCompleted = state.completedLevels.includes(lvl.id);
+          const isUnlocked = lvl.id <= state.unlockedLevel;
+
+          const card = document.createElement('div');
+          card.className = `level-node ${isCompleted ? 'completed' : ''} ${!isUnlocked ? 'locked' : ''}`;
+          card.innerHTML = `
+            <div class="lock-overlay">${isCompleted ? '✅' : (isUnlocked ? '⭐' : '🔒')}</div>
+            <div class="level-badge">LEVEL ${lvl.id}</div>
+            <div class="level-icon">${lvl.icon}</div>
+            <div class="level-title">${lvl.name}</div>
+            <div class="level-topic">${lvl.topic}</div>
+          `;
+
+          card.onclick = () => {
+            if (!isUnlocked) {
+              AudioEngine.playWrong();
+              return;
+            }
+            AudioEngine.playClick();
+            startLevel(lvl.id);
+          };
+          container.appendChild(card);
+        });
+
+        const certBtn = document.getElementById('btn-map-certificate');
+        certBtn.style.display = state.completedLevels.length >= 6 ? 'inline-flex' : 'none';
+
+        switchScreen('screen-map');
+      }
+
+      function startLevel(levelId) {
+        activeLevel = LEVELS_DATA.find(l => l.id === levelId);
+        if (!activeLevel) return;
+
+        questionIndex = 0;
+        lives = 3;
+        combo = 0;
+
+        document.getElementById('stage-level-badge').textContent = `LEVEL ${activeLevel.id}`;
+        document.getElementById('stage-level-title').textContent = `${activeLevel.icon} ${activeLevel.name}`;
+
+        switchScreen('screen-stage');
+        renderChallenge();
+      }
+
+      function clearTimer() {
+        if (timerInterval) {
+          clearInterval(timerInterval);
+          timerInterval = null;
+        }
+        const badge = document.getElementById('stage-timer');
+        if (badge) badge.classList.remove('active');
+      }
+
+      function startTimer(seconds) {
+        clearTimer();
+        timeLeft = seconds;
+        const badge = document.getElementById('stage-timer');
+        const secEl = document.getElementById('timer-seconds');
+        badge.classList.add('active');
+        secEl.textContent = timeLeft;
+
+        timerInterval = setInterval(() => {
+          if (document.getElementById('modal-pause').classList.contains('active')) return;
+          timeLeft--;
+          secEl.textContent = timeLeft;
+          if (timeLeft <= 0) {
+            clearTimer();
+            handleAnswerResult(false, '⏰ Time is up! Let\'s try the next response!');
+          }
+        }, 1000);
+      }
+
+      function speakCurrentPrompt() {
+        if (!activeLevel) return;
+        const ch = activeLevel.challenges[questionIndex];
+        const avatar = document.getElementById('stage-character-svg');
+        AudioEngine.speakText(
+          ch.promptEn,
+          () => avatar.classList.add('speaking'),
+          () => avatar.classList.remove('speaking')
+        );
+      }
+
+      function renderChallenge() {
+        clearTimer();
+        answeredCurrent = false;
+        const ch = activeLevel.challenges[questionIndex];
+        const total = activeLevel.challenges.length;
+
+        // Update progress bar
+        const pct = Math.round((questionIndex / total) * 100);
+        document.getElementById('stage-progress-fill').style.width = `${pct}%`;
+
+        // Hide feedback bar
+        const fb = document.getElementById('stage-feedback');
+        fb.className = 'feedback-bar';
+
+        // Set Character & Speech Bubble
+        const avatarEl = document.getElementById('stage-character-svg');
+        avatarEl.className = 'character-avatar';
+        avatarEl.innerHTML = CharacterArt.getSVG(ch.character);
+        document.getElementById('stage-character-name').textContent = ch.charName;
+        document.getElementById('stage-mode-tag').textContent = ch.modeLabel;
+        document.getElementById('stage-prompt-en').textContent = ch.promptEn;
+        document.getElementById('stage-prompt-id').textContent = ch.promptId;
+
+        const area = document.getElementById('stage-interactive-area');
+        area.innerHTML = '';
+
+        if (ch.timed) {
+          startTimer(20);
+        }
+
+        // Render according to challenge type
+        if (ch.type === 'mcq') {
+          renderMCQ(ch, area);
+        } else if (ch.type === 'builder') {
+          renderBuilder(ch, area);
+        } else if (ch.type === 'matching') {
+          renderMatching(ch, area);
+        } else if (ch.type === 'canteen') {
+          renderCanteen(ch, area);
+        } else if (ch.type === 'library') {
+          renderLibrary(ch, area);
+        }
+
+        // Auto pronounce prompt gently
+        setTimeout(() => speakCurrentPrompt(), 250);
+        updateHUD();
+      }
+
+      /* --- MINI-GAME TYPE 1: MULTIPLE CHOICE / COMPLETE / PICTURE --- */
+      function renderMCQ(ch, container) {
+        const grid = document.createElement('div');
+        grid.className = 'options-grid';
+        const letters = ['A', 'B', 'C', 'D'];
+
+        ch.options.forEach((opt, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'option-card';
+          btn.innerHTML = `<span class="option-letter">${letters[idx]}</span><span>${opt}</span>`;
+          btn.onclick = () => {
+            if (answeredCurrent) return;
+            AudioEngine.speakText(opt);
+            const isCorrect = idx === ch.answer;
+            if (isCorrect) {
+              btn.classList.add('correct');
+              handleAnswerResult(true, ch.explain);
+            } else {
+              btn.classList.add('wrong');
+              grid.children[ch.answer].classList.add('correct');
+              handleAnswerResult(false, ch.explain);
+            }
+          };
+          grid.appendChild(btn);
+        });
+        container.appendChild(grid);
+      }
+
+      /* --- MINI-GAME TYPE 2: DRAG & DROP CONVERSATION BUILDER --- */
+      function renderBuilder(ch, container) {
+        builderPlaced = [];
+        const shuffled = [...ch.correctOrder].sort(() => Math.random() - 0.5);
+
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = `
+          <div class="builder-zone">
+            <div>
+              <div style="font-weight:900; font-size:0.88rem; color:#475569; margin-bottom:6px;">🃏 DIALOGUE CARDS (Drag or Tap to Add)</div>
+              <div class="card-pool" id="builder-pool"></div>
+            </div>
+            <div>
+              <div style="font-weight:900; font-size:0.88rem; color:#1d4ed8; margin-bottom:6px;">💬 YOUR CONVERSATION ORDER (Drop Here)</div>
+              <div class="drop-slots" id="builder-target"></div>
+            </div>
+          </div>
+          <div style="margin-top:12px; display:flex; gap:10px; justify-content:flex-end;">
+            <button class="btn-3d btn-amber btn-sm" id="btn-builder-reset">🔄 RESET CARDS</button>
+            <button class="btn-3d btn-green btn-sm" id="btn-builder-check">✅ CHECK CONVERSATION</button>
+          </div>
+        `;
+        container.appendChild(wrapper);
+
+        const poolEl = wrapper.querySelector('#builder-pool');
+        const targetEl = wrapper.querySelector('#builder-target');
+
+        function redrawCards() {
+          poolEl.innerHTML = '';
+          targetEl.innerHTML = '';
+
+          shuffled.forEach((line, idx) => {
+            if (!builderPlaced.includes(line)) {
+              const card = document.createElement('div');
+              card.className = 'drag-card';
+              card.draggable = true;
+              card.innerHTML = `<span>${line}</span><span>➕</span>`;
+              card.ondragstart = (e) => e.dataTransfer.setData('text/plain', line);
+              card.onclick = () => {
+                if (answeredCurrent) return;
+                AudioEngine.playClick();
+                AudioEngine.speakText(line);
+                builderPlaced.push(line);
+                redrawCards();
+              };
+              poolEl.appendChild(card);
+            }
+          });
+
+          builderPlaced.forEach((line, idx) => {
+            const card = document.createElement('div');
+            card.className = 'drag-card';
+            card.style.borderColor = '#3b82f6';
+            card.style.boxShadow = '0 4px 0 #1d4ed8';
+            card.innerHTML = `<span><b>${idx + 1}.</b> ${line}</span><span>❌</span>`;
+            card.onclick = () => {
+              if (answeredCurrent) return;
+              AudioEngine.playClick();
+              builderPlaced = builderPlaced.filter(item => item !== line);
+              redrawCards();
+            };
+            targetEl.appendChild(card);
+          });
+        }
+
+        targetEl.ondragover = (e) => e.preventDefault();
+        targetEl.ondrop = (e) => {
+          e.preventDefault();
+          if (answeredCurrent) return;
+          const line = e.dataTransfer.getData('text/plain');
+          if (line && !builderPlaced.includes(line)) {
+            AudioEngine.playClick();
+            AudioEngine.speakText(line);
+            builderPlaced.push(line);
+            redrawCards();
+          }
+        };
+
+        wrapper.querySelector('#btn-builder-reset').onclick = () => {
+          if (answeredCurrent) return;
+          AudioEngine.playClick();
+          builderPlaced = [];
+          redrawCards();
+        };
+
+        wrapper.querySelector('#btn-builder-check').onclick = () => {
+          if (answeredCurrent) return;
+          if (builderPlaced.length < ch.correctOrder.length) {
+            AudioEngine.playWrong();
+            return;
+          }
+          const isMatch = builderPlaced.every((val, i) => val === ch.correctOrder[i]);
+          if (isMatch) {
+            handleAnswerResult(true, `🎉 Perfect Conversation! ${ch.explain}`);
+          } else {
+            handleAnswerResult(false, `Urutan yang tepat: ${ch.correctOrder.join(' → ')}`);
+          }
+        };
+
+        redrawCards();
+      }
+
+      /* --- MINI-GAME TYPE 3: MATCHING PAIRS --- */
+      function renderMatching(ch, container) {
+        selectedLeftMatch = null;
+        matchedCount = 0;
+
+        const rightShuffled = ch.pairs.map((p, i) => ({ text: p.right, pairIdx: i })).sort(() => Math.random() - 0.5);
+
+        const grid = document.createElement('div');
+        grid.className = 'matching-grid';
+
+        const leftCol = document.createElement('div');
+        leftCol.className = 'match-col';
+        const rightCol = document.createElement('div');
+        rightCol.className = 'match-col';
+
+        ch.pairs.forEach((p, idx) => {
+          const item = document.createElement('div');
+          item.className = 'match-item';
+          item.textContent = p.left;
+          item.dataset.pairIdx = idx;
+          item.onclick = () => {
+            if (answeredCurrent || item.classList.contains('matched')) return;
+            AudioEngine.playClick();
+            AudioEngine.speakText(p.left);
+            leftCol.querySelectorAll('.match-item').forEach(el => el.classList.remove('selected'));
+            item.classList.add('selected');
+            selectedLeftMatch = item;
+          };
+          leftCol.appendChild(item);
+        });
+
+        rightShuffled.forEach(r => {
+          const item = document.createElement('div');
+          item.className = 'match-item';
+          item.textContent = r.text;
+          item.onclick = () => {
+            if (answeredCurrent || item.classList.contains('matched') || !selectedLeftMatch) return;
+            AudioEngine.speakText(r.text);
+            const leftIdx = parseInt(selectedLeftMatch.dataset.pairIdx, 10);
+            if (leftIdx === r.pairIdx) {
+              AudioEngine.playCorrect();
+              selectedLeftMatch.classList.remove('selected');
+              selectedLeftMatch.classList.add('matched');
+              item.classList.add('matched');
+              selectedLeftMatch = null;
+              matchedCount++;
+              if (matchedCount === ch.pairs.length) {
+                handleAnswerResult(true, ch.explain);
+              }
+            } else {
+              AudioEngine.playWrong();
+              selectedLeftMatch.classList.remove('selected');
+              selectedLeftMatch = null;
+            }
+          };
+          rightCol.appendChild(item);
+        });
+
+        grid.appendChild(leftCol);
+        grid.appendChild(rightCol);
+        container.appendChild(grid);
+      }
+
+      /* --- MINI-GAME TYPE 4: CANTEEN ORDER YOUR FOOD --- */
+      function renderCanteen(ch, container) {
+        const menu = [
+          { id: 'burger', emoji: '🍔', name: 'Burger', phrase: "I'd like a burger, please." },
+          { id: 'sandwich', emoji: '🥪', name: 'Sandwich', phrase: "Can I have a sandwich, please?" },
+          { id: 'apple', emoji: '🍎', name: 'Apple', phrase: "I'd like an apple, please." },
+          { id: 'banana', emoji: '🍌', name: 'Banana', phrase: "I'd like a banana, please." },
+          { id: 'juice', emoji: '🥤', name: 'Juice', phrase: "I'd like some juice, please." },
+          { id: 'milk', emoji: '🥛', name: 'Milk', phrase: "I'd like some milk, please." }
+        ];
+
+        const grid = document.createElement('div');
+        grid.className = 'visual-items-grid';
+
+        menu.forEach(food => {
+          const btn = document.createElement('button');
+          btn.className = 'visual-item-btn';
+          btn.innerHTML = `
+            <span class="visual-item-emoji">${food.emoji}</span>
+            <span class="visual-item-label">${food.name}</span>
+          `;
+          btn.onclick = () => {
+            if (answeredCurrent) return;
+            AudioEngine.speakText(food.phrase);
+
+            if (!ch.targetItem || ch.targetItem === food.id) {
+              document.getElementById('stage-prompt-en').textContent =
+                `You: “${food.phrase}” → Seller: “Here you are! ${food.emoji}” → You: “Thank you!”`;
+              handleAnswerResult(true, `🎉 Delicious! You ordered ${food.name} politely!`);
+            } else {
+              handleAnswerResult(false, `Pesanan yang diminta adalah ${ch.targetItem.toUpperCase()}. Yuk coba lagi!`);
+            }
+          };
+          grid.appendChild(btn);
+        });
+
+        container.appendChild(grid);
+      }
+
+      /* --- MINI-GAME TYPE 5: LIBRARY FIND THE BOOK --- */
+      function renderLibrary(ch, container) {
+        const objects = [
+          { id: 'chair', emoji: '🪑', name: 'Chair (Kursi)' },
+          { id: 'shelf', emoji: '📚', name: 'Shelf (Rak Buku)' },
+          { id: 'window', emoji: '🪟', name: 'Window (Jendela)' },
+          { id: 'table', emoji: '🟫', name: 'Table (Meja)' }
+        ];
+
+        const grid = document.createElement('div');
+        grid.className = 'visual-items-grid';
+
+        objects.forEach(obj => {
+          const btn = document.createElement('button');
+          btn.className = 'visual-item-btn';
+          btn.style.borderColor = '#3b82f6';
+          btn.style.boxShadow = '0 6px 0 #1d4ed8';
+          btn.innerHTML = `
+            <span class="visual-item-emoji">${obj.emoji}</span>
+            <span class="visual-item-label">${obj.name}</span>
+          `;
+          btn.onclick = () => {
+            if (answeredCurrent) return;
+            if (obj.id === ch.correctObject) {
+              handleAnswerResult(true, ch.explain);
+            } else {
+              handleAnswerResult(false, `Bukan di ${obj.name}. Perhatikan petunjuk lokasi dari pustakawan!`);
+            }
+          };
+          grid.appendChild(btn);
+        });
+
+        container.appendChild(grid);
+      }
+
+      /* --- HANDLE ANSWER RESULT, SCORE, COMBO & LIVES --- */
+      function handleAnswerResult(isCorrect, explanation) {
+        answeredCurrent = true;
+        clearTimer();
+
+        const fb = document.getElementById('stage-feedback');
+        const fbTitle = document.getElementById('feedback-title');
+        const fbExplain = document.getElementById('feedback-explain');
+        const avatar = document.getElementById('stage-character-svg');
+
+        const goodPhrases = ['🎉 Excellent!', '⭐ Great Job!', '👏 Well Done!', '🌟 Amazing!'];
+        const tryPhrases = ['💡 Almost there!', '🔄 Try Again!', "📚 Let's learn together!"];
+
+        if (isCorrect) {
+          AudioEngine.playCorrect();
+          combo++;
+          const bonus = combo >= 2 ? (combo * 2) : 0;
+          state.score += (10 + bonus);
+          state.correctCount++;
+
+          if (combo >= 3) {
+            unlockAchievement('fast_thinker');
+          }
+
+          avatar.classList.add('happy');
+          fb.className = 'feedback-bar show success';
+          const randomPraise = goodPhrases[Math.floor(Math.random() * goodPhrases.length)];
+          fbTitle.textContent = combo >= 2 ? `${randomPraise} (+10 pts & 🔥 COMBO x${combo}!)` : `${randomPraise} (+10 points)`;
+          fbExplain.textContent = explanation;
+        } else {
+          AudioEngine.playWrong();
+          combo = 0;
+          lives = Math.max(0, lives - 1);
+
+          fb.className = 'feedback-bar show error';
+          const randomEncourage = tryPhrases[Math.floor(Math.random() * tryPhrases.length)];
+          fbTitle.textContent = `${randomEncourage} (-1 ❤️)`;
+          fbExplain.textContent = explanation;
+        }
+
+        const nextBtn = document.getElementById('btn-next-question');
+        if (lives <= 0) {
+          nextBtn.textContent = '🔄 RETRY LEVEL';
+        } else if (questionIndex >= activeLevel.challenges.length - 1) {
+          nextBtn.textContent = '🏆 COMPLETE LEVEL';
+        } else {
+          nextBtn.textContent = 'NEXT ▶';
+        }
+
+        saveStorage();
+        updateHUD();
+      }
+
+      function nextChallenge() {
+        AudioEngine.playClick();
+        if (lives <= 0) {
+          startLevel(activeLevel.id);
+          return;
+        }
+
+        if (questionIndex < activeLevel.challenges.length - 1) {
+          questionIndex++;
+          renderChallenge();
+        } else {
+          completeActiveLevel();
+        }
+      }
+
+      function completeActiveLevel() {
+        AudioEngine.playLevelComplete();
+        launchConfetti();
+
+        if (!state.completedLevels.includes(activeLevel.id)) {
+          state.completedLevels.push(activeLevel.id);
+        }
+        if (activeLevel.id >= state.unlockedLevel && activeLevel.id < 6) {
+          state.unlockedLevel = activeLevel.id + 1;
+        }
+
+        // Check Achievements
+        if (activeLevel.id === 1) unlockAchievement('first_conv');
+        if (state.completedLevels.length >= 4) unlockAchievement('conv_expert');
+        if (state.completedLevels.length >= 6) unlockAchievement('conv_master');
+
+        saveStorage();
+
+        if (activeLevel.id === 6 || state.completedLevels.length >= 6) {
+          showVictoryScreen();
+        } else {
+          goMap();
+        }
+      }
+
+      /* --- STUDY PHRASES MODAL --- */
+      function openStudyModal() {
+        AudioEngine.playClick();
+        if (!activeLevel) return;
+        const list = document.getElementById('study-vocab-list');
+        list.innerHTML = '';
+
+        activeLevel.vocab.forEach(item => {
+          const row = document.createElement('div');
+          row.className = 'vocab-row';
+          row.innerHTML = `
+            <div>
+              <div style="font-weight:900; color:#0f172a; font-size:1rem;">${item.en}</div>
+              <div style="font-size:0.84rem; color:#64748b; font-weight:700;">${item.id}</div>
+            </div>
+            <button class="btn-3d btn-sm">🔊 LISTEN</button>
+          `;
+          row.querySelector('button').onclick = () => AudioEngine.speakText(item.en);
+          list.appendChild(row);
+        });
+
+        document.getElementById('modal-study').classList.add('active');
+      }
+
+      /* --- SPEAKING CHALLENGE MODAL --- */
+      function openSpeakingModal() {
+        AudioEngine.playClick();
+        updateSpeakingUI();
+        document.getElementById('modal-speaking').classList.add('active');
+      }
+
+      function updateSpeakingUI() {
+        const s = SPEAKING_SENTENCES[speakIdx % SPEAKING_SENTENCES.length];
+        document.getElementById('speak-target-en').textContent = `“${s.en}”`;
+        document.getElementById('speak-target-id').textContent = `(${s.id})`;
+        document.getElementById('speak-status').textContent = 'Tekan tombol 🎤 SPEAK NOW lalu ucapkan kalimat di atas!';
+        document.getElementById('speak-status').style.color = '#334155';
+      }
+
+      function listenSpeakingExample() {
+        const s = SPEAKING_SENTENCES[speakIdx % SPEAKING_SENTENCES.length];
+        AudioEngine.speakText(s.en);
+      }
+
+      function nextSpeakingSentence() {
+        AudioEngine.playClick();
+        speakIdx++;
+        updateSpeakingUI();
+      }
+
+      function startSpeakingRecognition() {
+        AudioEngine.playClick();
+        const statusEl = document.getElementById('speak-status');
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        if (SpeechRecognition) {
+          try {
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            statusEl.textContent = '🎙️ Listening... Speak clearly now!';
+            statusEl.style.color = '#2563eb';
+
+            recognition.onresult = (event) => {
+              const heard = event.results[0][0].transcript;
+              statusEl.textContent = `🌟 Great Speaking! You said: “${heard}” (+5 pts)`;
+              statusEl.style.color = '#15803d';
+              state.score += 5;
+              unlockAchievement('great_speaker');
+              AudioEngine.playCorrect();
+              saveStorage();
+              updateHUD();
+            };
+
+            recognition.onerror = () => {
+              // Fallback friendly mode if mic blocked or unavailable
+              completeFallbackSpeaking(statusEl);
+            };
+
+            recognition.start();
+          } catch (e) {
+            completeFallbackSpeaking(statusEl);
+          }
+        } else {
+          completeFallbackSpeaking(statusEl);
+        }
+      }
+
+      function completeFallbackSpeaking(statusEl) {
+        statusEl.textContent = '🎙️ Practicing pronunciation...';
+        setTimeout(() => {
+          statusEl.textContent = '🌟 Great Speaking! Keep practicing out loud! (+5 pts)';
+          statusEl.style.color = '#15803d';
+          state.score += 5;
+          unlockAchievement('great_speaker');
+          AudioEngine.playCorrect();
+          saveStorage();
+          updateHUD();
+        }, 1200);
+      }
+
+      /* --- HELP, PAUSE & BADGES MODALS --- */
+      function openHelpModal() {
+        AudioEngine.playClick();
+        document.getElementById('modal-help').classList.add('active');
+      }
+
+      function openPauseModal() {
+        AudioEngine.playClick();
+        document.getElementById('modal-pause').classList.add('active');
+      }
+
+      function resumeFromPause() {
+        AudioEngine.playClick();
+        closeModal('modal-pause');
+      }
+
+      function openAchievementsModal() {
+        AudioEngine.playClick();
+        const grid = document.getElementById('badges-grid');
+        grid.innerHTML = '';
+
+        ACHIEVEMENTS_LIST.forEach(b => {
+          const earned = state.achievements.includes(b.id);
+          const row = document.createElement('div');
+          row.className = 'vocab-row';
+          row.style.background = earned ? '#fef3c7' : '#f1f5f9';
+          row.style.borderColor = earned ? '#f59e0b' : '#cbd5e1';
+          row.innerHTML = `
+            <div style="display:flex; align-items:center; gap:12px;">
+              <span style="font-size:1.8rem; filter:${earned ? 'none' : 'grayscale(1)'};">${b.icon}</span>
+              <div>
+                <div style="font-weight:900; color:${earned ? '#92400e' : '#64748b'};">${b.title}</div>
+                <div style="font-size:0.82rem; color:#475569; font-weight:700;">${b.desc}</div>
+              </div>
+            </div>
+            <span style="font-weight:900; color:${earned ? '#16a34a' : '#94a3b8'};">${earned ? '✅ UNLOCKED' : '🔒 LOCKED'}</span>
+          `;
+          grid.appendChild(row);
+        });
+
+        document.getElementById('modal-badges').classList.add('active');
+      }
+
+      function closeModal(id) {
+        document.getElementById(id).classList.remove('active');
+      }
+
+      /* --- FINAL VICTORY & CERTIFICATE GENERATOR --- */
+      function getRankPredicate(score) {
+        if (score >= 90) return '🏆 CONVERSATION MASTER';
+        if (score >= 80) return '🌟 GREAT SPEAKER';
+        if (score >= 70) return '👍 GOOD JOB';
+        if (score >= 60) return '💪 KEEP PRACTICING';
+        return "📚 LET'S TRY AGAIN";
+      }
+
+      function showVictoryScreen() {
+        AudioEngine.playVictory();
+        launchConfetti();
+
+        const rank = getRankPredicate(state.score);
+        document.getElementById('vic-name').textContent = state.name;
+        document.getElementById('vic-class').textContent = state.studentClass;
+        document.getElementById('vic-score').textContent = state.score;
+        document.getElementById('vic-correct').textContent = state.correctCount;
+        document.getElementById('vic-levels').textContent = `${state.completedLevels.length}/6`;
+        document.getElementById('vic-rank').textContent = rank;
+
+        document.getElementById('final-personal-msg').textContent =
+          `“Congratulations, ${state.name}! You have completed the English Conversation Adventure! Keep practicing English every day! See you next time!”`;
+
+        drawCertificateCanvas(rank);
+        switchScreen('screen-victory');
+      }
+
+      function drawCertificateCanvas(rankText) {
+        const canvas = document.getElementById('certificate-canvas');
+        const ctx = canvas.getContext('2d');
+        const w = canvas.width;
+        const h = canvas.height;
+
+        // Background Gradient
+        const grad = ctx.createLinearGradient(0, 0, w, h);
+        grad.addColorStop(0, '#fffbeb');
+        grad.addColorStop(0.5, '#ffffff');
+        grad.addColorStop(1, '#eff6ff');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, h);
+
+        // Decorative Outer & Inner Borders
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 18;
+        ctx.strokeRect(20, 20, w - 40, h - 40);
+
+        ctx.strokeStyle = '#3b82f6';
+        ctx.lineWidth = 6;
+        ctx.strokeRect(42, 42, w - 84, h - 84);
+
+        // Header Ribbon
+        ctx.fillStyle = '#1d4ed8';
+        ctx.font = '900 40px "Trebuchet MS", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('🏆 CERTIFICATE OF ACHIEVEMENT 🏆', w / 2, 118);
+
+        ctx.fillStyle = '#475569';
+        ctx.font = '700 22px "Trebuchet MS", sans-serif';
+        ctx.fillText('This certificate is proudly presented to:', w / 2, 178);
+
+        // Student Name
+        ctx.fillStyle = '#d97706';
+        ctx.font = '900 50px "Trebuchet MS", sans-serif';
+        ctx.fillText(state.name.toUpperCase(), w / 2, 245);
+
+        // Underline
+        ctx.strokeStyle = '#fbbf24';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(w / 2 - 240, 262);
+        ctx.lineTo(w / 2 + 240, 262);
+        ctx.stroke();
+
+        ctx.fillStyle = '#334155';
+        ctx.font = '700 22px "Trebuchet MS", sans-serif';
+        ctx.fillText(`Class: ${state.studentClass}  •  for successfully completing:`, w / 2, 305);
+
+        ctx.fillStyle = '#15803d';
+        ctx.font = '900 32px "Trebuchet MS", sans-serif';
+        ctx.fillText('ENGLISH CONVERSATION ADVENTURE', w / 2, 355);
+
+        // Score & Predicate Box
+        ctx.fillStyle = '#fef3c7';
+        ctx.fillRect(w / 2 - 260, 385, 520, 74);
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(w / 2 - 260, 385, 520, 74);
+
+        ctx.fillStyle = '#92400e';
+        ctx.font = '900 24px "Trebuchet MS", sans-serif';
+        ctx.fillText(`Score: ${state.score}  |  ${rankText}`, w / 2, 430);
+
+        // Motto & Date
+        ctx.fillStyle = '#1d4ed8';
+        ctx.font = 'italic 800 24px "Trebuchet MS", sans-serif';
+        ctx.fillText('“Keep Speaking English!”', w / 2, 505);
+
+        const today = new Date().toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+        ctx.fillStyle = '#64748b';
+        ctx.font = '700 18px "Trebuchet MS", sans-serif';
+        ctx.fillText(`Awarded on ${today}`, w / 2, 548);
+      }
+
+      function downloadCertificate() {
+        AudioEngine.playClick();
+        const canvas = document.getElementById('certificate-canvas');
+        const link = document.createElement('a');
+        const safeName = state.name.replace(/[^a-z0-9]/gi, '_') || 'Student';
+        link.download = `Certificate_English_Adventure_${safeName}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      }
+
+      function resetAllProgress() {
+        AudioEngine.playClick();
+        state.unlockedLevel = 1;
+        state.completedLevels = [];
+        state.score = 0;
+        state.correctCount = 0;
+        saveStorage();
+        goMap();
+      }
+
+      /* --- CONFETTI CELEBRATION ANIMATION --- */
+      function launchConfetti() {
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const colors = ['#f59e0b', '#3b82f6', '#22c55e', '#ec4899', '#a855f7'];
+        const pieces = Array.from({ length: 90 }, () => ({
+          x: Math.random() * canvas.width,
+          y: Math.random() * -canvas.height,
+          w: 10 + Math.random() * 8,
+          h: 6 + Math.random() * 6,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          vy: 3 + Math.random() * 4,
+          vx: -2 + Math.random() * 4,
+          rot: Math.random() * 360
+        }));
+
+        let frames = 0;
+        function animateConfetti() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          pieces.forEach(p => {
+            p.y += p.vy;
+            p.x += p.vx;
+            p.rot += 5;
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rot * Math.PI) / 180);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+            ctx.restore();
+          });
+          frames++;
+          if (frames < 150) {
+            requestAnimationFrame(animateConfetti);
+          } else {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+          }
+        }
+        animateConfetti();
+      }
+
+      // Initialize on Load
+      window.addEventListener('DOMContentLoaded', () => {
+        loadStorage();
+      });
+
+      return {
+        startAdventure,
+        continueSavedGame,
+        goHome,
+        goBack,
+        goMap,
+        speakCurrentPrompt,
+        nextChallenge,
+        openStudyModal,
+        openSpeakingModal,
+        listenSpeakingExample,
+        nextSpeakingSentence,
+        startSpeakingRecognition,
+        openHelpModal,
+        openPauseModal,
+        resumeFromPause,
+        openAchievementsModal,
+        closeModal,
+        showVictoryScreen,
+        downloadCertificate,
+        resetAllProgress
+      };
+    })();
+  </script>
+</body>
+</html>
